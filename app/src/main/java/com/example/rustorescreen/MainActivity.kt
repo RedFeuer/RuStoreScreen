@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -12,7 +11,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -59,7 +57,7 @@ private fun AppRoot() {
             }
             composable(
                 route = "details/{appId}", // details screen with appId argument
-                arguments = listOf(navArgument("id") { type = NavType.IntType }), // appId is Int
+                arguments = listOf(navArgument("appId") { type = NavType.IntType }), // appId is Int
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getInt("appId") ?: return@composable // if no id, return
                 val app = AppRepository.byId(id) // get app by id
