@@ -6,6 +6,7 @@ import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.LocationOn
 import com.example.rustorescreen.model.AppItem
 
+/* hardcoded */
 object AppRepository {
     private val items = listOf(
         AppItem(
@@ -18,7 +19,7 @@ object AppRepository {
         AppItem(
             id = 2,
             title = "Яндекс Браузер",
-            subtitle = "Быстрые и безопасный браузер",
+            subtitle = "Быстрый и безопасный браузер",
             category = "Инструменты",
             icon = Icons.Outlined.Build
         ),
