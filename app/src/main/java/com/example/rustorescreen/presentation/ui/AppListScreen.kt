@@ -1,4 +1,4 @@
-package com.example.rustorescreen.presentation
+package com.example.rustorescreen.presentation.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

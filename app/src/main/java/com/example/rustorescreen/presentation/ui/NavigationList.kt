@@ -1,4 +1,4 @@
-package com.example.rustorescreen.presentation
+package com.example.rustorescreen.presentation.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -43,7 +43,9 @@ internal fun AppRoot() {
                 val id = backStackEntry.arguments?.getInt("appId") ?: return@composable // if no id, return
                 val app = AppRepository.byId(id) // get app by id
                 if (app != null) {
-                    AppDetailsScreen(app = app, onBack = { nav.popBackStack() }) // details of app with back action
+                    AppDetailsScreen(
+                        app = app,
+                        onBack = { nav.popBackStack() }) // details of app with back action
                 }
             }
         }

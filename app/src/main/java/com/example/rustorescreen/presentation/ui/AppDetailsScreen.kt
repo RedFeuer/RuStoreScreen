@@ -1,4 +1,4 @@
-package com.example.rustorescreen.presentation
+package com.example.rustorescreen.presentation.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
