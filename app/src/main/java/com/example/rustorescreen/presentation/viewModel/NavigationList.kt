@@ -1,4 +1,4 @@
-package com.example.rustorescreen.presentation.ui
+package com.example.rustorescreen.presentation.viewModel
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -13,6 +13,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.rustorescreen.data.AppRepository
+import com.example.rustorescreen.presentation.ui.AppDetailsScreen
+import com.example.rustorescreen.presentation.ui.AppListScreen
 
 @OptIn(ExperimentalMaterial3Api::class) // using Material3 experimental API
 @Composable
