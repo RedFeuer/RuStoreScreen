@@ -1,13 +1,13 @@
-package com.example.rustorescreen.data
+package com.example.rustorescreen.data.database
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.PlayArrow
 import com.example.rustorescreen.domain.domainModel.AppItem
 
 /* hardcoded */
-object AppRepository {
+object AppDatabase {
     private val items = listOf(
         AppItem(
             id = 1,
