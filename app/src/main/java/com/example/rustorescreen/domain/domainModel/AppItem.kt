@@ -1,4 +1,4 @@
-package com.example.rustorescreen.model
+package com.example.rustorescreen.domain.domainModel
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

@@ -4,7 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.LocationOn
-import com.example.rustorescreen.model.AppItem
+import com.example.rustorescreen.domain.domainModel.AppItem
 
 /* hardcoded */
 object AppRepository {

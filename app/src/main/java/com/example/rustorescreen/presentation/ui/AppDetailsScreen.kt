@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.rustorescreen.model.AppItem
+import com.example.rustorescreen.domain.domainModel.AppItem
 
 @OptIn(ExperimentalMaterial3Api::class) // using Material3 experimental API
 @Composable
