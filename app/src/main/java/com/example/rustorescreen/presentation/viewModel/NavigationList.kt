@@ -12,7 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.rustorescreen.data.database.AppDatabase
+import com.example.rustorescreen.data.api.API
 import com.example.rustorescreen.presentation.ui.AppDetailsScreen
 import com.example.rustorescreen.presentation.ui.AppListScreen
 
@@ -32,7 +32,7 @@ internal fun AppRoot() {
         ) {
             composable("list") {
                 AppListScreen( // list of apps
-                    apps = AppDatabase.all(), // get all apps from repository
+                    apps = API.all(), // get all apps from repository
                     onAppClick = { appId ->
                         nav.navigate("details/$appId") // navigate to details screen
                     }
@@ -43,7 +43,7 @@ internal fun AppRoot() {
                 arguments = listOf(navArgument("appId") { type = NavType.IntType }), // appId is Int
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getInt("appId") ?: return@composable // if no id, return
-                val app = AppDatabase.byId(id) // get app by id
+                val app = API.byId(id) // get app by id
                 if (app != null) {
                     AppDetailsScreen(
                         app = app,
