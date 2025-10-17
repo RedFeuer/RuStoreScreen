@@ -19,7 +19,7 @@ fun AppDetailsScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = {Text(app.title, maxLines = 1) },
+                title = {Text(app.name, maxLines = 1) },
                 /* button to go back to list of apps */
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -36,13 +36,14 @@ fun AppDetailsScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.Start, // Align content to the start (left)
         ) {
-            Icon(app.icon, contentDescription = null, modifier = Modifier.size(84.dp))
+            /* FIX ICONS FOR URLS */
+//            Icon(app.icon, contentDescription = null, modifier = Modifier.size(84.dp))
             Spacer(Modifier.height(16.dp))
-            Text(app.title, style = MaterialTheme.typography.headlineSmall)
+            Text(app.name, style = MaterialTheme.typography.headlineSmall)
             Spacer(Modifier.height(8.dp))
-            Text(app.subtitle, style = MaterialTheme.typography.bodyLarge)
+            Text(app.description, style = MaterialTheme.typography.bodyLarge)
             Spacer(Modifier.height(8.dp))
-            AssistChip(onClick = {}, label = { Text(app.category) })
+            AssistChip(onClick = {}, label = { Text(app.category.toString()) })
         }
     }
 }

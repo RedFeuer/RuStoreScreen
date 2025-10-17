@@ -43,16 +43,17 @@ private fun AppRow(app: AppItem, onClick: () -> Unit) {
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = app.icon,
-            contentDescription = null,
-            modifier = Modifier.size(44.dp)
-        )
+        /* FIX ICONS FOR URLS */
+//        Icon(
+//            imageVector = app.icon,
+//            contentDescription = null,
+//            modifier = Modifier.size(44.dp)
+//        )
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = app.title, style = MaterialTheme.typography.bodyLarge)
-            Text(text = app.subtitle, style = MaterialTheme.typography.bodyMedium)
-            Text(text = app.category, style = MaterialTheme.typography.bodySmall)
+            Text(text = app.name, style = MaterialTheme.typography.bodyLarge)
+            Text(text = app.description, style = MaterialTheme.typography.bodyMedium)
+            Text(text = app.category.toString(), style = MaterialTheme.typography.bodySmall)
         }
     }
 }
