@@ -47,7 +47,7 @@ private fun AppRow(app: AppItem, onClick: () -> Unit) {
 //        Icon(
 //            imageVector = app.icon,
 //            contentDescription = null,
-//            modifier = Modifier.size(44.dp)
+//            modifier = Modifier.size(44.dp )
 //        )
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {
