@@ -103,5 +103,7 @@ class AppListAPI {
     )
 
     fun getAppList(): List<AppDto> = items
+
+    @Suppress("UNUSED_PARAMETER") // for future use
     fun getById(id: Int): AppDto? = items.find { it.id == id }
 }
