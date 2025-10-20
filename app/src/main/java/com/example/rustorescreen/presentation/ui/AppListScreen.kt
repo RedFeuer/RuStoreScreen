@@ -38,8 +38,8 @@ private fun AppRow(app: App, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(24.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         /* FIX ICONS FOR URLS */
 //        Icon(
