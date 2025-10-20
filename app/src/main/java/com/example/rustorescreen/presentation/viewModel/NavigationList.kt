@@ -12,7 +12,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.rustorescreen.data.api.API
+import com.example.rustorescreen.data.repositoryImpl.AppRepositoryImpl
+import com.example.rustorescreen.domain.domainModel.App
+import com.example.rustorescreen.domain.repositoryInterface.AppRepository
+import com.example.rustorescreen.domain.useCase.GetAppUseCase
 import com.example.rustorescreen.presentation.ui.AppDetailsScreen
 import com.example.rustorescreen.presentation.ui.AppListScreen
 
@@ -20,6 +23,17 @@ import com.example.rustorescreen.presentation.ui.AppListScreen
 @Composable
 internal fun AppRoot() {
     val nav = rememberNavController()
+    val repository: AppRepository = AppRepositoryImpl() // create Repository instance
+    val getAppUseCase: GetAppUseCase
+    try {
+        getAppUseCase = GetAppUseCase(repository) // create UseCase instance
+    }
+    catch (e: IllegalArgumentException) {
+        // Handle the exception (e.g., log it or show an error message)
+        println("Error initializing GetAppUseCase: ${e.message}")
+    }
+    val apps: List<App> = getAppUseCase() // get all Apps from Repository
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("RuStore") })
@@ -32,7 +46,7 @@ internal fun AppRoot() {
         ) {
             composable("list") {
                 AppListScreen( // list of apps
-                    apps = API.all(), // get all apps from repository
+                    apps = apps, // get all apps from repository
                     onAppClick = { appId ->
                         nav.navigate("details/$appId") // navigate to details screen
                     }
@@ -43,7 +57,7 @@ internal fun AppRoot() {
                 arguments = listOf(navArgument("appId") { type = NavType.IntType }), // appId is Int
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getInt("appId") ?: return@composable // if no id, return
-                val app = API.byId(id) // get app by id
+                val app = apps.find { it.id == id } // find app(domain) by id
                 if (app != null) {
                     AppDetailsScreen(
                         app = app,
