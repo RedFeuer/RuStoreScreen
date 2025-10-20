@@ -7,23 +7,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.rustorescreen.domain.domainModel.AppItem
+import com.example.rustorescreen.domain.domainModel.App
 
 @Composable
 fun AppListScreen(
-    apps: List<AppItem>,
+    apps: List<App>,
     onAppClick: (Int) -> Unit
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -35,7 +33,7 @@ fun AppListScreen(
 }
 
 @Composable
-private fun AppRow(app: AppItem, onClick: () -> Unit) {
+private fun AppRow(app: App, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
