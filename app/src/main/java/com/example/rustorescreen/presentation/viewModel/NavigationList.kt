@@ -23,13 +23,14 @@ import com.example.rustorescreen.presentation.ui.AppListScreen
 @Composable
 internal fun AppRoot() {
     val nav = rememberNavController()
+
     val repository: AppRepository = AppRepositoryImpl() // create Repository instance
     val getAppUseCase: GetAppUseCase
     try {
         getAppUseCase = GetAppUseCase(repository) // create UseCase instance
     }
     catch (e: IllegalArgumentException) {
-        // Handle the exception (e.g., log it or show an error message)
+        // Handle the exception
         println("Error initializing GetAppUseCase: ${e.message}")
     }
     val apps: List<App> = getAppUseCase() // get all Apps from Repository
