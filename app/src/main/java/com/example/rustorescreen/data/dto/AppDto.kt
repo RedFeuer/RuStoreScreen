@@ -1,8 +1,10 @@
-package com.example.rustorescreen.domain.domainModel
+package com.example.rustorescreen.data.dto
 
-data class AppItem(
+import com.example.rustorescreen.domain.domainModel.AppCategory
+
+data class AppDto(
     val id: Int,
-    val name: String,
+    val title: String,
     val developer: String,
     val category: AppCategory,
     val ageRating: Int,

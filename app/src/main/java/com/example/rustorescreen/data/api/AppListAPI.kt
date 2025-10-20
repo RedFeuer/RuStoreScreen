@@ -1,14 +1,14 @@
 package com.example.rustorescreen.data.api
 
 import com.example.rustorescreen.domain.domainModel.AppCategory
-import com.example.rustorescreen.domain.domainModel.AppItem
+import com.example.rustorescreen.data.dto.AppDto
 
 /* hardcoded */
-object API {
+class AppListAPI {
     private val items = listOf(
-        AppItem(
+        AppDto(
             id = 1,
-            name = "Сбербанк Онлайн",
+            title = "Сбербанк Онлайн",
             developer = "Сбербанк",
             description = "Больше чем банк",
             category = AppCategory.APP,
@@ -20,9 +20,9 @@ object API {
                 "https://example.com/screens/sber_2.png"
             )
         ),
-        AppItem(
+        AppDto(
             id = 2,
-            name = "Яндекс Браузер",
+            title = "Яндекс Браузер",
             developer = "Яндекс",
             description = "Быстрый и безопасный браузер",
             category = AppCategory.APP,
@@ -34,9 +34,9 @@ object API {
                 "https://example.com/screens/yandex_2.png"
             )
         ),
-        AppItem(
+        AppDto(
             id = 3,
-            name = "Почта Mail.ru",
+            title = "Почта Mail.ru",
             developer = "Mail.ru",
             description = "Почтовый клиент для любых ящиков",
             category = AppCategory.APP,
@@ -45,9 +45,9 @@ object API {
             iconUrl = "https://example.com/icons/mailru.png",
             screenshotUrlList = listOf("https://example.com/screens/mailru_1.png")
         ),
-        AppItem(
+        AppDto(
             id = 4,
-            name = "Яндекс Навигатор",
+            title = "Яндекс Навигатор",
             developer = "Яндекс",
             description = "Парковки и заправки - по пути",
             category = AppCategory.APP,
@@ -59,9 +59,9 @@ object API {
                 "https://example.com/screens/nav_2.png"
             )
         ),
-        AppItem(
+        AppDto(
             id = 5,
-            name = "Мой МТС",
+            title = "Мой МТС",
             developer = "МТС",
             description = "Мой МТС - центр экосистемы МТС",
             category = AppCategory.APP,
@@ -70,9 +70,9 @@ object API {
             iconUrl = "https://example.com/icons/mts.png",
             screenshotUrlList = listOf("https://example.com/screens/mts_1.png")
         ),
-        AppItem(
+        AppDto(
             id = 6,
-            name = "Яндекс с Алисой",
+            title = "Яндекс с Алисой",
             developer = "Яндекс",
             description = "Яндекс - всегда под рукой",
             category = AppCategory.APP,
@@ -84,9 +84,9 @@ object API {
                 "https://example.com/screens/alice_2.png"
             )
         ),
-        AppItem(
+        AppDto(
             id = 7,
-            name = "Гильдия Героев: Экшен ММО РПГ",
+            title = "Гильдия Героев: Экшен ММО РПГ",
             developer = "VK Play",
             category = AppCategory.GAME,
             ageRating = 12,
@@ -102,6 +102,6 @@ object API {
         ),
     )
 
-    fun all(): List<AppItem> = items
-    fun byId(id: Int): AppItem? = items.find { it.id == id }
+    fun getAppList(): List<AppDto> = items
+    fun getById(id: Int): AppDto? = items.find { it.id == id }
 }
