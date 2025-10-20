@@ -12,7 +12,7 @@ class GetAppUseCase(
 
         for (app in apps) {
             if (app.id < 0) {
-                throw IllegalArgumentException("App ID cannot be negative: ${app.id}")
+                throw IllegalArgumentException("App with name: ${app.name} has id: ${app.id}. But id must be non-negative.")
             }
         }
 
