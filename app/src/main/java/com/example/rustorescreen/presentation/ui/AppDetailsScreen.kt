@@ -34,12 +34,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.rustorescreen.domain.domainModel.AppItem
+import com.example.rustorescreen.domain.domainModel.App
 
 @OptIn(ExperimentalMaterial3Api::class) // using Material3 experimental API
 @Composable
 fun AppDetailsScreen(
-    app: AppItem,
+    app: App,
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
