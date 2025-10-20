@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
@@ -45,7 +45,7 @@ fun AppDetailsScreen(
     val context = LocalContext.current
     var descriptionExpanded by remember { mutableStateOf(false) }
 
-    val WorkInProgressText = "Функция в разработке"
+    val workInProgressText = "Функция в разработке"
 
     Scaffold(
         topBar = {
@@ -54,7 +54,7 @@ fun AppDetailsScreen(
                 /* button to go back to list of apps */
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Назад")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
                     }
                 },
                 actions = { // share button
@@ -103,7 +103,7 @@ fun AppDetailsScreen(
                 /* Installation button */
                 Button(
                     onClick = {
-                        Toast.makeText(context, WorkInProgressText, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, workInProgressText, Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -147,7 +147,7 @@ fun AppDetailsScreen(
                         .fillMaxWidth()
                         .padding(start = 16.dp)
                         .clickable{
-                            Toast.makeText(context, WorkInProgressText, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, workInProgressText, Toast.LENGTH_SHORT).show()
                         },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
