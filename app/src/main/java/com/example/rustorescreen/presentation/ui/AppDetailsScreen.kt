@@ -123,6 +123,8 @@ fun AppDetailsScreen(
                     Text(
                         text = app.description,
                         style = MaterialTheme.typography.bodyLarge,
+                        /*shows all lines, when expanded
+                        * if !expended shows only 2 lines*/
                         maxLines = if (descriptionExpanded) Int.MAX_VALUE else 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -152,6 +154,7 @@ fun AppDetailsScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
+                        /*TODO: developer's screen*/
                         text = "Другие сведения",
                         style = MaterialTheme.typography.bodyMedium
                     )
