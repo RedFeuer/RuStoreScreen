@@ -4,9 +4,9 @@ import com.example.rustorescreen.data.api.AppListAPI
 import com.example.rustorescreen.data.dto.AppDto
 import com.example.rustorescreen.data.mapper.AppMapper
 import com.example.rustorescreen.domain.domainModel.App
-import com.example.rustorescreen.domain.repositoryInterface.AppRepository
+import com.example.rustorescreen.domain.repositoryInterface.AppListRepository
 
-class AppRepositoryImpl : AppRepository {
+class AppListRepositoryImpl : AppListRepository {
     private val appListApi = AppListAPI()
     private val appMapper = AppMapper()
 
