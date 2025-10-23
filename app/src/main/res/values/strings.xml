@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">RuStoreScreen</string>
+
+    <string name="category_app">Приложения</string>
+    <string name="category_game">Игры</string>
+
+    <string name="app_details_age">Возраст</string>
+    <string name="app_details_size">Размер</string>
+
+    <string name="install">Установить</string>
+
+    <string name="app_details_screenshots">Скриншоты</string>
+
+    <string name="app_details_description">Описание приложения</string>
+    <string name="app_details_read_more">Читать подробнее</string>
+
+    <string name="app_details_developer">Разработчик</string>
+
+    <string name="under_development">В процессе разработки</string>
+
+    <string name="app_details_error">Произошла непредвиденная ошибка</string>
+    <string name="app_details_error_refresh">Перезагрузить</string>
 </resources>
