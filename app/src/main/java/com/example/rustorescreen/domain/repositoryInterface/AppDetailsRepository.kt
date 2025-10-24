@@ -3,5 +3,5 @@ package com.example.rustorescreen.domain.repositoryInterface
 import com.example.rustorescreen.domain.domainModel.AppDetails
 
 interface AppDetailsRepository {
-    suspend fun get(): AppDetails
+    suspend fun getById(id: Int): AppDetails
 }
