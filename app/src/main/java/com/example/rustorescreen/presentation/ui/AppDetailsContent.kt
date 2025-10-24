@@ -1,13 +1,15 @@
 package com.example.rustorescreen.presentation.ui
 
-import android.widget.Toolbar
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.unit.dp
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.presentation.viewModel.AppDetailsState
@@ -31,10 +33,49 @@ fun AppDetailsContent(
             onShareClick = onShareClick,
         )
         Spacer(modifier = Modifier.height(8.dp))
+
         AppDetailsHeader(
             appDetails = appDetails,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
+        Spacer(Modifier.height(16.dp))
 
+        InstallButton(
+            onClick = onInstallClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+        )
+        Spacer(Modifier.height(16.dp))
+
+        ScreenshotsList(
+            screenshotUrlList = listOf("1", "2", "3"),
+            contentPadding = PaddingValues(horizontal = 16.dp),
+        )
+        Spacer(Modifier.height(12.dp))
+
+        AppDescription(
+            description = appDetails.description,
+            expanded = descriptionExpanded,
+            onExpandClick = onDescriptionExpandClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+        )
+        Spacer(Modifier.height(12.dp))
+
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            color = MaterialTheme.colorScheme.outlineVariant,
+        )
+        Spacer(Modifier.height(12.dp))
+
+        Developer(
+            name = appDetails.developer,
+            onClick = onDeveloperInfoClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp),
+        )
     }
 }
