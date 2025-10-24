@@ -13,6 +13,7 @@
 
     <string name="app_details_description">Описание приложения</string>
     <string name="app_details_read_more">Читать подробнее</string>
+    <string name="app_details_read_less">Свернуть</string>
 
     <string name="app_details_developer">Разработчик</string>
 
