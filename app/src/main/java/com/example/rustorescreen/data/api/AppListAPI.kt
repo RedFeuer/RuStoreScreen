@@ -104,6 +104,6 @@ class AppListAPI {
 
     fun getAppList(): List<AppDto> = items
 
-    @Suppress("UNUSED_PARAMETER") // for future use
-    fun getById(id: Int): AppDto? = items.find { it.id == id }
+    /* not nullable, just throws exception if there are no such app */
+    fun getById(id: Int): AppDto = items.find { it.id == id } ?: throw Exception("App with id $id not found")
 }
