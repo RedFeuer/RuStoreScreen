@@ -1,6 +1,6 @@
 package com.example.rustorescreen.domain.domainModel
 
-data class App(
+data class AppDetails(
     val id: Int,
     val name: String,
     val developer: String,

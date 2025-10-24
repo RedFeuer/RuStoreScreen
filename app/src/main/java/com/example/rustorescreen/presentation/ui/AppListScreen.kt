@@ -17,11 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.rustorescreen.domain.domainModel.App
+import com.example.rustorescreen.domain.domainModel.AppDetails
 
 @Composable
 fun AppListScreen(
-    apps: List<App>,
+    apps: List<AppDetails>,
     onAppClick: (Int) -> Unit
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -33,7 +33,7 @@ fun AppListScreen(
 }
 
 @Composable
-private fun AppRow(app: App, onClick: () -> Unit) {
+private fun AppRow(app: AppDetails, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

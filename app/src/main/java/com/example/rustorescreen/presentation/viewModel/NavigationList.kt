@@ -12,9 +12,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.rustorescreen.data.repositoryImpl.AppRepositoryImpl
-import com.example.rustorescreen.domain.domainModel.App
-import com.example.rustorescreen.domain.repositoryInterface.AppRepository
+import com.example.rustorescreen.data.repositoryImpl.AppListRepositoryImpl
+import com.example.rustorescreen.domain.domainModel.AppDetails
+import com.example.rustorescreen.domain.repositoryInterface.AppListRepository
 import com.example.rustorescreen.domain.useCase.GetAppUseCase
 import com.example.rustorescreen.presentation.ui.AppDetailsScreen
 import com.example.rustorescreen.presentation.ui.AppListScreen
@@ -24,7 +24,7 @@ import com.example.rustorescreen.presentation.ui.AppListScreen
 internal fun AppRoot() {
     val nav = rememberNavController()
 
-    val repository: AppRepository = AppRepositoryImpl() // create Repository instance
+    val repository: AppListRepository = AppListRepositoryImpl() // create Repository instance
     val getAppUseCase: GetAppUseCase
     try {
         getAppUseCase = GetAppUseCase(repository) // create UseCase instance
@@ -33,7 +33,7 @@ internal fun AppRoot() {
         // Handle the exception
         println("Error initializing GetAppUseCase: ${e.message}")
     }
-    val apps: List<App> = getAppUseCase() // get all Apps from Repository
+    val apps: List<AppDetails> = getAppUseCase() // get all Apps from Repository
 
     Scaffold(
         topBar = {

@@ -1,14 +1,14 @@
 package com.example.rustorescreen.domain.useCase
 
-import com.example.rustorescreen.domain.domainModel.App
-import com.example.rustorescreen.domain.repositoryInterface.AppRepository
+import com.example.rustorescreen.domain.domainModel.AppDetails
+import com.example.rustorescreen.domain.repositoryInterface.AppListRepository
 
 // Use case for retrieving App data
 class GetAppUseCase(
-    private val appRepository: AppRepository // Dependency injection of the AppRepository
+    private val appRepository: AppListRepository // Dependency injection of the AppRepository
 ) {
-    operator fun invoke(): List<App> {
-        val apps: List<App> = appRepository.get()// Fetches the App data from the repository when called
+    operator fun invoke(): List<AppDetails> {
+        val apps: List<AppDetails> = appRepository.get()// Fetches the App data from the repository when called
 
         for (app in apps) {
             if (app.id < 0) {

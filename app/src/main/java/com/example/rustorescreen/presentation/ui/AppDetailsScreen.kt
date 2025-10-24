@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
@@ -25,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,14 +36,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.rustorescreen.domain.domainModel.App
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.rustorescreen.domain.domainModel.AppDetails
+import com.example.rustorescreen.presentation.viewModel.AppDetailsState
+import com.example.rustorescreen.presentation.viewModel.AppDetailsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class) // using Material3 experimental API
 @Composable
 fun AppDetailsScreen(
-    app: App,
+    app: AppDetails,
     onBack: () -> Unit
 ) {
+    val viewModel = viewModel<AppDetailsViewModel>()
+    /* подписка на состояние для реактивного обновления экрана приложения
+    * обертка над AppDetailsState, которая вызывает перерисовку экрана когда состояние меняется
+    * (и только тогда) */
+    val state = viewModel.state.collectAsState()
+
+    // TODO: add events
+
+
     val context = LocalContext.current
     var descriptionExpanded by remember { mutableStateOf(false) }
 
@@ -73,16 +87,45 @@ fun AppDetailsScreen(
                 }
             )
         }
-    ) { padding -> // inner padding from Scaffold
+    ) { contendPadding -> // inner padding from Scaffold
+        when (val currentState = state) {
+            is AppDetailsState.Loading ->{
+                AppDetailsLoading(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .safeDrawingPadding()
+                        .padding(contendPadding),
+                )
+            }
+
+            is AppDetailsState.Error -> {
+                AppDetailsError(
+                    onRefreshClick = { viewModel.getAppDetails() },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .safeDrawingPadding()
+                        .padding(contendPadding),
+                )
+            }
+
+            is AppDetailsState.Content -> {
+                AppDetailsContent()
+            }
+        }
+
+
+
+
+        /*TODO: move to AppDetailsContent*/
         Column(
             modifier = Modifier
-                .padding(padding)
+                .padding(contendPadding)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.Start, // Align content to the start (left)
         ) {
             Column(
                 modifier = Modifier
-                    .padding(padding)
+                    .padding(contendPadding)
                     .fillMaxSize()
             ) {
                 Spacer(Modifier.height(8.dp))

@@ -2,7 +2,6 @@ package com.example.rustorescreen.domain.repositoryInterface
 
 import com.example.rustorescreen.domain.domainModel.AppDetails
 
-// Repository interface for fetching App data
-interface AppListRepository {
-    fun get(): List<AppDetails>
+interface AppDetailsRepository {
+    suspend fun get(): AppDetails
 }
