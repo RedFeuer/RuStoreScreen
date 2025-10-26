@@ -12,7 +12,7 @@ sealed interface AppDetailsState {
     /* состояние с данными приложения */
     data class Content(
         val appDetails: AppDetails,
-        val descriptionExpanded: Boolean,
+        val descriptionExpanded: Boolean = false,
     ) : AppDetailsState
 
 }

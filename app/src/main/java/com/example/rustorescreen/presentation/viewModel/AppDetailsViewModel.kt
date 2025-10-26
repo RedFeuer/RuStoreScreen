@@ -35,7 +35,7 @@ class AppDetailsViewModel(private val appId: Int): ViewModel() {
     fun expandDescription() {
         _state.update { currentState ->
             if (currentState is AppDetailsState.Content) {
-                currentState.copy(descriptionExpanded = true)
+                currentState.copy(descriptionExpanded = !currentState.descriptionExpanded)
             } else {
                 currentState
             }
