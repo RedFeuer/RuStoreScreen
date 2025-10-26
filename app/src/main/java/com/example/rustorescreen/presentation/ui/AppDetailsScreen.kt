@@ -91,14 +91,17 @@ fun AppDetailsScreen(
             is AppDetailsState.Content -> {
                 AppDetailsContent(
                     content = currentState,
-                    onBackClick = onBack,
+                    onBackClick = {
+                        // TODO: Открыть предыдущий экран через Jetpack Navigation
+                        onBack()
+                    },
                     onShareClick = {
                         // TODO: Реализовать функционал шаринга
-                        onBack
+                        onBack()
                     },
                     onInstallClick = {
                         // TODO: Реализовать функционал установки приложения
-                        onBack
+                        onBack()
                     },
                     onDescriptionExpandClick = {
                         // TODO: Реализовать разворачивание/сворачивание описания
@@ -106,7 +109,7 @@ fun AppDetailsScreen(
                     },
                     onDeveloperInfoClick = {
                         // TODO: Реализовать переход к информации о разработчике
-                        onBack
+                        onBack()
                     },
                     modifier = Modifier
                         .fillMaxSize()
