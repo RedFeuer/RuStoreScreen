@@ -21,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.presentation.viewModel.AppDetailsState
 import com.example.rustorescreen.presentation.viewModel.AppDetailsViewModel
+import com.example.rustorescreen.presentation.viewModel.AppDetailsViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class) // using Material3 experimental API
 @Composable
@@ -28,11 +29,13 @@ fun AppDetailsScreen(
     app: AppDetails,
     onBack: () -> Unit
 ) {
-    val viewModel = viewModel<AppDetailsViewModel>()
+    // получаение ViewModel с помощью фабрики, которая принимает id приложения
+    val viewModel = viewModel<AppDetailsViewModel>(factory = AppDetailsViewModelFactory(app.id))
+//    val viewModel1 : AppDetailsViewModel = viewModel(factory = AppDetailsViewModelFactory(app.id))
     /* подписка на состояние для реактивного обновления экрана приложения
     * обертка над AppDetailsState, которая вызывает перерисовку экрана когда состояние меняется
     * (и только тогда) */
-    val state = viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsState() // подписка на состояние(дает реактивное обновление)
 
     // TODO: add events
 
@@ -65,7 +68,7 @@ fun AppDetailsScreen(
             )
         }
     ) { contentPadding -> // inner padding from Scaffold
-        when (val currentState = state) {
+        when (val currentState = state.value) {
             is AppDetailsState.Loading ->{
                 AppDetailsLoading(
                     modifier = Modifier
@@ -102,7 +105,7 @@ fun AppDetailsScreen(
                     },
                     onDescriptionExpandClick = {
                         // TODO: Реализовать разворачивание/сворачивание описания
-                        viewModel.ExpandDescription()
+                        viewModel.expandDescription()
                     },
                     onDeveloperInfoClick = {
                         // TODO: Реализовать переход к информации о разработчике

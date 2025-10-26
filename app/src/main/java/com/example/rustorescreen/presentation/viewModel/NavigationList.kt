@@ -25,13 +25,11 @@ internal fun AppRoot() {
     val nav = rememberNavController()
 
     val repository: AppListRepository = AppListRepositoryImpl() // create Repository instance
-    val getAppUseCase: GetAppListUseCase
-    try {
-        getAppUseCase = GetAppListUseCase(repository) // create UseCase instance
-    }
-    catch (e: IllegalArgumentException) {
-        // Handle the exception
+    val getAppUseCase: GetAppListUseCase = try {
+        GetAppListUseCase(repository)
+    } catch (e: IllegalArgumentException) {
         println("Error initializing GetAppUseCase: ${e.message}")
+        throw e
     }
     val apps: List<AppDetails> = getAppUseCase() // get all Apps from Repository
 

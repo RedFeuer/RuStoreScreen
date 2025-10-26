@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AppDetailsViewModel(private val appId: Int): ViewModel() {
@@ -30,6 +31,16 @@ class AppDetailsViewModel(private val appId: Int): ViewModel() {
     }
 
     /*TODO: add events here (snacks) - в курсе это показ таблички, что функция WIP*/
+
+    fun expandDescription() {
+        _state.update { currentState ->
+            if (currentState is AppDetailsState.Content) {
+                currentState.copy(descriptionExpanded = true)
+            } else {
+                currentState
+            }
+        }
+    }
 
     fun getAppDetails() {
         viewModelScope.launch {
