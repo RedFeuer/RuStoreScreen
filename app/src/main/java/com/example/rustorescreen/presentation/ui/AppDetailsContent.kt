@@ -1,11 +1,14 @@
 package com.example.rustorescreen.presentation.ui
 
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -27,18 +30,20 @@ fun AppDetailsContent(
     val appDetails: AppDetails = content.appDetails
     val descriptionExpanded: Boolean = content.descriptionExpanded
 
-    Column(modifier) {
+    val scrollState = rememberScrollState()
+
+    Column(modifier = modifier.verticalScroll(scrollState)) {
         Toolbar(
             onBackClick = onBackClick,
             onShareClick = onShareClick,
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         AppDetailsHeader(
             appDetails = appDetails,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(4.dp))
 
         InstallButton(
             onClick = onInstallClick,
@@ -46,29 +51,29 @@ fun AppDetailsContent(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         )
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(4.dp))
 
         ScreenshotsList(
             screenshotUrlList = listOf("1", "2", "3"),
             contentPadding = PaddingValues(horizontal = 16.dp),
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(4.dp))
 
         AppDescription(
             description = appDetails.description,
-            expanded = descriptionExpanded,
+            expanded = !descriptionExpanded,
             onExpandClick = onDescriptionExpandClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(4.dp))
 
         HorizontalDivider(
             modifier = Modifier.padding(horizontal = 16.dp),
             color = MaterialTheme.colorScheme.outlineVariant,
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(4.dp))
 
         Developer(
             name = appDetails.developer,

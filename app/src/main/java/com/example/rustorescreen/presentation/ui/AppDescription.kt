@@ -36,9 +36,9 @@ fun AppDescription(
             onClick = onExpandClick
         ) {
             Text(if (expanded) {
-                stringResource(R.string.app_details_read_less)
-            } else {
                 stringResource(R.string.app_details_read_more)
+            } else {
+                stringResource(R.string.app_details_read_less)
             })
         }
     }
