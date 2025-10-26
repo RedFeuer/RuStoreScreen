@@ -15,7 +15,7 @@ import androidx.navigation.navArgument
 import com.example.rustorescreen.data.repositoryImpl.AppListRepositoryImpl
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.domain.repositoryInterface.AppListRepository
-import com.example.rustorescreen.domain.useCase.GetAppUseCase
+import com.example.rustorescreen.domain.useCase.GetAppListUseCase
 import com.example.rustorescreen.presentation.ui.AppDetailsScreen
 import com.example.rustorescreen.presentation.ui.AppListScreen
 
@@ -25,9 +25,9 @@ internal fun AppRoot() {
     val nav = rememberNavController()
 
     val repository: AppListRepository = AppListRepositoryImpl() // create Repository instance
-    val getAppUseCase: GetAppUseCase
+    val getAppUseCase: GetAppListUseCase
     try {
-        getAppUseCase = GetAppUseCase(repository) // create UseCase instance
+        getAppUseCase = GetAppListUseCase(repository) // create UseCase instance
     }
     catch (e: IllegalArgumentException) {
         // Handle the exception

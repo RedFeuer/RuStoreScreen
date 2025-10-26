@@ -4,7 +4,7 @@ import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.domain.repositoryInterface.AppListRepository
 
 // Use case for retrieving App data
-class GetAppUseCase(
+class GetAppListUseCase(
     private val appRepository: AppListRepository // Dependency injection of the AppRepository
 ) {
     operator fun invoke(): List<AppDetails> {
