@@ -91,10 +91,7 @@ fun AppDetailsScreen(
             is AppDetailsState.Content -> {
                 AppDetailsContent(
                     content = currentState,
-                    onBackClick = {
-                        // TODO: Открыть предыдущий экран через Jetpack Navigation
-                        onBack
-                    },
+                    onBackClick = onBack,
                     onShareClick = {
                         // TODO: Реализовать функционал шаринга
                         onBack
