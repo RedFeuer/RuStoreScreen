@@ -11,17 +11,20 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.presentation.viewModel.AppDetailsState
 import com.example.rustorescreen.presentation.viewModel.AppDetailsViewModel
 import com.example.rustorescreen.presentation.viewModel.AppDetailsViewModelFactory
+import com.example.rustorescreen.R
 
 @OptIn(ExperimentalMaterial3Api::class) // using Material3 experimental API
 @Composable
@@ -48,7 +51,11 @@ fun AppDetailsScreen(
                 /* button to go back to list of apps */
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Назад")
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
                     }
                 },
                 actions = { // share button
@@ -62,7 +69,11 @@ fun AppDetailsScreen(
                             Intent.createChooser(shareIntent, "Поделиться с помощью")
                         )
                     }) {
-                        Icon(Icons.Default.Share, contentDescription = "Поделиться")
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = stringResource(R.string.share),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
                     }
                 }
             )

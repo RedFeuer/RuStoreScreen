@@ -11,6 +11,10 @@
 
     <string name="app_details_screenshots">Скриншоты</string>
 
+    <string name="back">Назад</string>
+    <string name="share">Поделиться</string>
+    <string name="share_using">Поделиться с помощью</string>
+
     <string name="app_details_description">Описание приложения</string>
     <string name="app_details_read_more">Читать подробнее</string>
     <string name="app_details_read_less">Свернуть</string>

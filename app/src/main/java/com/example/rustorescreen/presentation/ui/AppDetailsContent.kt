@@ -33,10 +33,10 @@ fun AppDetailsContent(
     val scrollState = rememberScrollState()
 
     Column(modifier = modifier.verticalScroll(scrollState)) {
-        Toolbar(
-            onBackClick = onBackClick,
-            onShareClick = onShareClick,
-        )
+//        Toolbar(
+//            onBackClick = onBackClick,
+//            onShareClick = onShareClick,
+//        )
         Spacer(modifier = Modifier.height(4.dp))
 
         AppDetailsHeader(
