@@ -80,7 +80,7 @@ fun AppDetailsScreen(
         }
     ) { contentPadding -> // inner padding from Scaffold
         when (val currentState = state.value) {
-            is AppDetailsState.Loading ->{
+            is AppDetailsState.Loading -> {
                 AppDetailsLoading(
                     modifier = Modifier
                         .fillMaxSize()
