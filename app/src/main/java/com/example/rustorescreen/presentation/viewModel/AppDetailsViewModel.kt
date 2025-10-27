@@ -1,7 +1,9 @@
 package com.example.rustorescreen.presentation.viewModel
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rustorescreen.R
 import com.example.rustorescreen.data.repositoryImpl.AppDetailsRepositoryImpl
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
 import kotlinx.coroutines.channels.Channel
@@ -23,14 +25,21 @@ class AppDetailsViewModel(private val appId: Int): ViewModel() {
     private val _state = MutableStateFlow<AppDetailsState>(AppDetailsState.Loading)
     val state: StateFlow<AppDetailsState> = _state.asStateFlow()
 
-    private val _events = Channel<AppDetailsEvent>(BUFFERED)
+    private val _events = Channel<AppDetailsEvent>(
+        capacity = BUFFERED,
+        )
     val events = _events.receiveAsFlow()
 
     init {
         getAppDetails()
     }
 
-    /*TODO: add events here (snacks) - в курсе это показ таблички, что функция WIP*/
+    // показать сообщение о том, что функция в разработке
+    fun showWorkInProgressMessage(@StringRes messageResId: Int = R.string.work_in_progress) {
+        viewModelScope.launch{
+            _events.send(AppDetailsEvent.WorkInProgress(messageResId)) // отправка события в канал
+        }
+    }
 
     fun expandDescription() {
         _state.update { currentState ->
