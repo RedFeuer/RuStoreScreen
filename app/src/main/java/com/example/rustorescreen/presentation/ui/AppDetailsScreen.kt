@@ -13,18 +13,24 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.domainModel.AppDetails
+import com.example.rustorescreen.presentation.viewModel.AppDetailsEvent
 import com.example.rustorescreen.presentation.viewModel.AppDetailsState
 import com.example.rustorescreen.presentation.viewModel.AppDetailsViewModel
 import com.example.rustorescreen.presentation.viewModel.AppDetailsViewModelFactory
-import com.example.rustorescreen.R
+import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class) // using Material3 experimental API
 @Composable
@@ -40,8 +46,12 @@ fun AppDetailsScreen(
     * (и только тогда) */
     val state = viewModel.state.collectAsState() // подписка на состояние(дает реактивное обновление)
 
-    // TODO: add events
-
+    val events : Flow<AppDetailsEvent> = viewModel.events
+    val snackbarHostState : SnackbarHostState = remember{ SnackbarHostState() }
+    ObserveEvents( // наблюдение за событиями из ViewModel и отображение Snackbar при необходимости
+        events = events,
+        snackbarHostState = snackbarHostState,
+    )
 
     val context = LocalContext.current
     Scaffold(
@@ -77,7 +87,10 @@ fun AppDetailsScreen(
                     }
                 }
             )
-        }
+        },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState)
+        },
     ) { contentPadding -> // inner padding from Scaffold
         when (val currentState = state.value) {
             is AppDetailsState.Loading -> {
@@ -108,11 +121,11 @@ fun AppDetailsScreen(
                     },
                     onShareClick = {
                         // TODO: Реализовать функционал шаринга
-                        onBack()
+                        viewModel.showWorkInProgressMessage()
                     },
                     onInstallClick = {
                         // TODO: Реализовать функционал установки приложения
-                        onBack()
+                        viewModel.showWorkInProgressMessage()
                     },
                     onDescriptionExpandClick = {
                         // TODO: Реализовать разворачивание/сворачивание описания
@@ -120,13 +133,35 @@ fun AppDetailsScreen(
                     },
                     onDeveloperInfoClick = {
                         // TODO: Реализовать переход к информации о разработчике
-                        onBack()
+                        viewModel.showWorkInProgressMessage()
                     },
                     modifier = Modifier
                         .fillMaxSize()
                         .safeDrawingPadding()
                         .padding(contentPadding),
                 )
+            }
+        }
+    }
+}
+
+/* ObserveEvents запускает корутину (LaunchedEffect) и делает events.collect.
+ При получении события (например, WorkInProgress) вызывается snackbarHostState.showSnackbar.
+  showSnackbar — suspend-функция => её корректно вызывать из корутины, запущенной в LaunchedEffect */
+// наблюдение за событиями из ViewModel и отображение Snackbar при необходимости
+@Composable
+private fun ObserveEvents(
+    events: Flow<AppDetailsEvent>,
+    snackbarHostState: SnackbarHostState,
+) {
+    val workInProgressText: String = stringResource(R.string.work_in_progress)
+
+    LaunchedEffect(Unit) {
+        events.collect { event -> // чтение поступающих событий из Flow
+            when (event) {
+                is AppDetailsEvent.WorkInProgress -> {
+                    snackbarHostState.showSnackbar(message = workInProgressText)
+                }
             }
         }
     }
