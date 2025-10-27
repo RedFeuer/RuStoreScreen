@@ -10,6 +10,7 @@ sealed interface AppDetailsState {
     data object Loading: AppDetailsState
 
     /* состояние с данными приложения */
+    /* здесь можно расширять функционал, добавляя новые поля состояния */
     data class Content(
         val appDetails: AppDetails,
         val descriptionExpanded: Boolean = false,

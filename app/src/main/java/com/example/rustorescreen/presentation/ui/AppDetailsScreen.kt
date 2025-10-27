@@ -40,7 +40,6 @@ fun AppDetailsScreen(
 ) {
     // получаение ViewModel с помощью фабрики, которая принимает id приложения
     val viewModel = viewModel<AppDetailsViewModel>(factory = AppDetailsViewModelFactory(app.id))
-//    val viewModel1 : AppDetailsViewModel = viewModel(factory = AppDetailsViewModelFactory(app.id))
     /* подписка на состояние для реактивного обновления экрана приложения
     * обертка над AppDetailsState, которая вызывает перерисовку экрана когда состояние меняется
     * (и только тогда) */
