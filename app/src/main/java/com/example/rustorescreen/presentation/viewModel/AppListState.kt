@@ -9,5 +9,5 @@ sealed interface AppListState {
     data class Content(
         val appList: List<AppDetails>,
         // TODO: add more fields if needed
-    )
+    ) : AppListState
 }
