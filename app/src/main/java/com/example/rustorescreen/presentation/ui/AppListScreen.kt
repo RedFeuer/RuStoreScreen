@@ -19,9 +19,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,8 +37,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.domainModel.AppDetails
+import com.example.rustorescreen.presentation.viewModel.AppListEvent
 import com.example.rustorescreen.presentation.viewModel.AppListState
 import com.example.rustorescreen.presentation.viewModel.AppListViewModel
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun AppListScreen(
@@ -43,22 +50,53 @@ fun AppListScreen(
     val viewModel = viewModel<AppListViewModel>()
     val state = viewModel.state.collectAsState() // подписка на состояние(дает реактивное обновление)
 
-    when (val currentState = state.value) {
-        is AppListState.Loading -> {
-            AppListLoading()
-        }
+    val events : Flow<AppListEvent> = viewModel.events
+    val snackbarHostState : SnackbarHostState = remember{ SnackbarHostState() }
 
-        is AppListState.Error -> {
-            AppListError(
-                onRefreshClick = { viewModel.getAppList() }
-            )
-        }
+    ObserveEvents( // наблюдение за событиями из ViewModel и отображение Snackbar при необходимости
+        events = events,
+        snackbarHostState = snackbarHostState,
+    )
 
-        is AppListState.Content -> {
-            AppListContent(
-                apps = currentState.appList,
-                onAppClick = onAppClick,
-            )
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+    ) { contentPadding ->
+        when (val currentState = state.value) {
+            is AppListState.Loading -> {
+                AppListLoading()
+            }
+
+            is AppListState.Error -> {
+                AppListError(
+                    onRefreshClick = { viewModel.getAppList() }
+                )
+            }
+
+            is AppListState.Content -> {
+                AppListContent(
+                    apps = currentState.appList,
+                    onAppClick = onAppClick,
+                    onIconClick = { viewModel.showTapOnIconMessage() }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ObserveEvents(
+    events: Flow<AppListEvent>,
+    snackbarHostState: SnackbarHostState,
+) {
+    val easterEggMessage = stringResource(R.string.easter_egg_message)
+
+    LaunchedEffect(Unit) {
+        events.collect {event ->
+            when (event) {
+                is AppListEvent.TapOnIcon -> {
+                    snackbarHostState.showSnackbar(message = easterEggMessage)
+                }
+            }
         }
     }
 }
@@ -67,10 +105,15 @@ fun AppListScreen(
 private fun AppListContent(
     apps: List<AppDetails>,
     onAppClick: (Int) -> Unit,
+    onIconClick: () -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(apps, key = {it.id}) { app ->
-            AppRow(app = app, onClick = { onAppClick(app.id) } )
+            AppRow(
+                app = app,
+                onAppClick = { onAppClick(app.id) },
+                onIconClick = { onIconClick() }
+            )
             HorizontalDivider()
         }
     }
@@ -112,11 +155,15 @@ private fun AppListLoading() {
 }
 
 @Composable
-private fun AppRow(app: AppDetails, onClick: () -> Unit) {
+private fun AppRow(
+    app: AppDetails,
+    onAppClick: () -> Unit,
+    onIconClick: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(onClick = onAppClick)
             .padding(24.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -126,6 +173,7 @@ private fun AppRow(app: AppDetails, onClick: () -> Unit) {
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
+                .clickable(onClick = onIconClick)
                 .size(80.dp)
                 .clip(RoundedCornerShape(4.dp))
         )
