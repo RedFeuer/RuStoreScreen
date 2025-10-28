@@ -2,6 +2,7 @@ package com.example.rustorescreen.presentation.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -63,12 +65,21 @@ fun AppListScreen(
     ) { contentPadding ->
         when (val currentState = state.value) {
             is AppListState.Loading -> {
-                AppListLoading()
+                AppListLoading(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .safeDrawingPadding()
+                        .padding(contentPadding),
+                )
             }
 
             is AppListState.Error -> {
                 AppListError(
-                    onRefreshClick = { viewModel.getAppList() }
+                    onRefreshClick = { viewModel.getAppList() },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .safeDrawingPadding()
+                        .padding(contentPadding),
                 )
             }
 
@@ -76,7 +87,11 @@ fun AppListScreen(
                 AppListContent(
                     apps = currentState.appList,
                     onAppClick = onAppClick,
-                    onIconClick = { viewModel.showTapOnIconMessage() }
+                    onIconClick = { viewModel.showTapOnIconMessage() },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .safeDrawingPadding()
+                        .padding(contentPadding)
                 )
             }
         }
@@ -106,8 +121,9 @@ private fun AppListContent(
     apps: List<AppDetails>,
     onAppClick: (Int) -> Unit,
     onIconClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(modifier = modifier) {
         items(apps, key = {it.id}) { app ->
             AppRow(
                 app = app,
@@ -121,10 +137,11 @@ private fun AppListContent(
 
 @Composable
 private fun AppListError(
-    onRefreshClick: () -> Unit
+    onRefreshClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column (
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -145,13 +162,13 @@ private fun AppListError(
 }
 
 @Composable
-private fun AppListLoading() {
-    CircularProgressIndicator(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .wrapContentSize(Alignment.Center),
-    )
+private fun AppListLoading(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
 }
 
 @Composable
