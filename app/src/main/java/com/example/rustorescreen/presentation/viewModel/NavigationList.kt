@@ -49,7 +49,7 @@ internal fun AppRoot() {
             /* экранчики и навигация к ним */
             composable(route = "list") {
                 AppListScreen( // list of apps
-                    apps = apps, // get all apps from repository
+//                    apps = apps, // get all apps from repository
                     onAppClick = { appId ->
                         nav.navigate("details/$appId") // navigate to details screen
                     }

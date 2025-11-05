@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,7 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.domainModel.AppDetails
@@ -46,10 +45,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun AppListScreen(
-    apps: List<AppDetails>,
+//    apps: List<AppDetails>, - useless parameter, because we get data from ViewModel
     onAppClick: (Int) -> Unit
 ) {
-    val viewModel = viewModel<AppListViewModel>()
+    val viewModel = hiltViewModel<AppListViewModel>()
     val state = viewModel.state.collectAsState() // подписка на состояние(дает реактивное обновление)
 
     val events : Flow<AppListEvent> = viewModel.events
