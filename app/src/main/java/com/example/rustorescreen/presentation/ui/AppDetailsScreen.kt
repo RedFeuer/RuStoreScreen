@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.domainModel.AppDetails
@@ -39,10 +40,11 @@ fun AppDetailsScreen(
     onBack: () -> Unit
 ) {
     // получаение ViewModel с помощью фабрики, которая принимает id приложения
-    val viewModel : AppDetailsViewModel = viewModel<AppDetailsViewModel>(factory = AppDetailsViewModelFactory(app.id))
+//    val viewModel : AppDetailsViewModel = viewModel<AppDetailsViewModel>(factory = AppDetailsViewModelFactory(app.id))
     /* подписка на состояние для реактивного обновления экрана приложения
     * обертка над AppDetailsState, которая вызывает перерисовку экрана когда состояние меняется
     * (и только тогда) */
+    val viewModel : AppDetailsViewModel = hiltViewModel<AppDetailsViewModel>() // Hilt DI для ViewModel
     val state = viewModel.state.collectAsState() // подписка на состояние(дает реактивное обновление)
 
     val events : Flow<AppDetailsEvent> = viewModel.events
