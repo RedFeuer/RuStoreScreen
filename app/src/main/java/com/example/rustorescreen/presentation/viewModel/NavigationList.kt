@@ -7,6 +7,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,6 +20,7 @@ import com.example.rustorescreen.domain.useCase.GetAppListUseCase
 import com.example.rustorescreen.presentation.ui.AppDetailsScreen
 import com.example.rustorescreen.presentation.ui.AppListScreen
 
+/* граф навигации в приложении */
 @OptIn(ExperimentalMaterial3Api::class) // using Material3 experimental API
 @Composable
 internal fun AppRoot() {
@@ -61,13 +63,12 @@ internal fun AppRoot() {
                 route = "details/{appId}", // details screen with appId argument
                 arguments = listOf(navArgument("appId") { type = NavType.IntType }), // appId is Int
             ) { backStackEntry ->
-                val id = backStackEntry.arguments?.getInt("appId") ?: return@composable // if no id, return
-                val app = apps.find { it.id == id } // find app(domain) by id
-                if (app != null) {
-                    AppDetailsScreen(
-                        app = app,
-                        onBack = { nav.popBackStack() }) // details of app with back action
-                }
+                val viewModel: AppDetailsViewModel = hiltViewModel(viewModelStoreOwner = backStackEntry)
+                AppDetailsScreen(
+                    app = null,
+                    viewModel = viewModel,
+                    onBack = { nav.popBackStack() }, // details of app with back action
+                )
             }
         }
     }
