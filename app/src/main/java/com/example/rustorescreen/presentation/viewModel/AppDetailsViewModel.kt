@@ -1,11 +1,12 @@
 package com.example.rustorescreen.presentation.viewModel
 
 import androidx.annotation.StringRes
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rustorescreen.R
-import com.example.rustorescreen.data.repositoryImpl.AppDetailsRepositoryImpl
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,13 +15,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AppDetailsViewModel(private val appId: Int): ViewModel() {
 
-    private val getAppDetailsUseCase = GetAppDetailsUseCase(
-        /* TODO: add DI there */
-        appDetailsRepository = AppDetailsRepositoryImpl()
-    )
+@HiltViewModel
+class AppDetailsViewModel  @Inject constructor (
+    private val getAppDetailsUseCase: GetAppDetailsUseCase,
+    savedStateHandle: SavedStateHandle, // для получения сохраненного состояния(включая параметры навигации)
+): ViewModel() {
+    private val appId: Int = checkNotNull(savedStateHandle.get<Int>("appId"))
 
     private val _state = MutableStateFlow<AppDetailsState>(AppDetailsState.Loading)
     val state: StateFlow<AppDetailsState> = _state.asStateFlow()
