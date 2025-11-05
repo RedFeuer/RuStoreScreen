@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.devtools.ksp")
+    kotlin("kapt") // подключение KAPT для Hilt
     id("com.google.dagger.hilt.android")
 }
 
@@ -41,6 +41,13 @@ android {
     buildFeatures {
         compose = true
     }
+    hilt {
+        enableAggregatingTask = false
+    }
+
+    kapt {
+        arguments {arg("room.schemaLocation", "$projectDir/schemas")}
+    }
 }
 
 dependencies {
@@ -49,15 +56,22 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.navigation.compose)
+
+
+    // Coil Image Loading
     implementation("io.coil-kt.coil3:coil-compose:3.3.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
     implementation(libs.androidx.room.ktx)
+
+    // Hilt
     implementation("com.google.dagger:hilt-android:2.57.2")
-    ksp("com.google.dagger:hilt-android-compiler:2.57.2")
+    kapt("com.google.dagger:hilt-compiler:2.57.2")
+
+    // Hilt + Compose Navigation
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
