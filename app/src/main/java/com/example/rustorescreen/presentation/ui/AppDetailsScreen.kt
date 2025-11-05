@@ -23,20 +23,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.presentation.viewModel.AppDetailsEvent
 import com.example.rustorescreen.presentation.viewModel.AppDetailsState
 import com.example.rustorescreen.presentation.viewModel.AppDetailsViewModel
-import com.example.rustorescreen.presentation.viewModel.AppDetailsViewModelFactory
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class) // using Material3 experimental API
 @Composable
 fun AppDetailsScreen(
-    app: AppDetails,
+    app: AppDetails?,
+    viewModel: AppDetailsViewModel,
     onBack: () -> Unit
 ) {
     // получаение ViewModel с помощью фабрики, которая принимает id приложения
@@ -44,7 +42,7 @@ fun AppDetailsScreen(
     /* подписка на состояние для реактивного обновления экрана приложения
     * обертка над AppDetailsState, которая вызывает перерисовку экрана когда состояние меняется
     * (и только тогда) */
-    val viewModel : AppDetailsViewModel = hiltViewModel<AppDetailsViewModel>() // Hilt DI для ViewModel
+//    val viewModel : AppDetailsViewModel = hiltViewModel<AppDetailsViewModel>() // Hilt DI для ViewModel
     val state = viewModel.state.collectAsState() // подписка на состояние(дает реактивное обновление)
 
     val events : Flow<AppDetailsEvent> = viewModel.events
@@ -55,10 +53,19 @@ fun AppDetailsScreen(
     )
 
     val context = LocalContext.current
+
+    val appName = when (val currentState = state.value) { // получение имени приложения в зависимости от состояния
+        is AppDetailsState.Content -> currentState.appDetails.name
+        else -> app?.name ?: "" // если app null, то пустая строка
+    }
+    val appDescription = when (val currentState = state.value) { // получение описания приложения в зависимости от состояния
+        is AppDetailsState.Content -> currentState.appDetails.description
+        else -> app?.description ?: "" // если app null, то пустая строка
+    }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = {Text(app.name, maxLines = 1) },
+                title = {Text(appName, maxLines = 1) },
                 /* button to go back to list of apps */
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -71,7 +78,7 @@ fun AppDetailsScreen(
                 },
                 actions = { // share button
                     IconButton(onClick =  {
-                        val shareText = "Check out this app: ${app.name}\n\n${app.description}"
+                        val shareText = "Check out this app: ${appName}\n\n${appDescription}"
                         val shareIntent = Intent(Intent.ACTION_SEND).apply {
                             type = "text/plain"
                             putExtra(Intent.EXTRA_TEXT, shareText)
