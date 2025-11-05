@@ -26,16 +26,6 @@ import com.example.rustorescreen.presentation.ui.AppListScreen
 internal fun AppRoot() {
     val nav = rememberNavController()
 
-
-    val repository: AppListRepository = AppListRepositoryImpl() // create Repository instance
-    val getAppUseCase: GetAppListUseCase = try {
-        GetAppListUseCase(repository)
-    } catch (e: IllegalArgumentException) {
-        println("Error initializing GetAppUseCase: ${e.message}")
-        throw e
-    }
-    val apps: List<AppDetails> = getAppUseCase() // get all Apps from Repository
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(title = { Text("RuStore") })
@@ -47,15 +37,14 @@ internal fun AppRoot() {
             modifier = Modifier.padding(inner)
         ) {
             /* экранчики и навигация к ним */
-            composable(route = "list") {
+            composable(route = "list") { // экран списка приложений
                 AppListScreen( // list of apps
-//                    apps = apps, // get all apps from repository
                     onAppClick = { appId ->
                         nav.navigate("details/$appId") // navigate to details screen
                     }
                 )
             }
-            composable(
+            composable( // экран конкретного приложения
                 route = "details/{appId}", // details screen with appId argument
                 arguments = listOf(navArgument("appId") { type = NavType.IntType }), // appId is Int
             ) { backStackEntry ->

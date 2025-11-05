@@ -45,7 +45,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun AppListScreen(
-//    apps: List<AppDetails>, - useless parameter, because we get data from ViewModel
     onAppClick: (Int) -> Unit
 ) {
     val viewModel = hiltViewModel<AppListViewModel>()
