@@ -26,11 +26,6 @@ import com.example.rustorescreen.presentation.ui.AppListScreen
 internal fun AppRoot() {
     val nav = rememberNavController()
 
-    /* сделать DI . Варианты:
-    * 1) Выносить repository в входной параметр AppRoot и передавать его в MainActivity
-    * 2) Посмотреть github RuStore
-    *
-    * ТАКЖЕ ПОСМОТРЕТЬ ПРО DI И JetpackNavigation */
 
     val repository: AppListRepository = AppListRepositoryImpl() // create Repository instance
     val getAppUseCase: GetAppListUseCase = try {
@@ -51,7 +46,8 @@ internal fun AppRoot() {
             startDestination = "list",
             modifier = Modifier.padding(inner)
         ) {
-            composable("list") {
+            /* экранчики и навигация к ним */
+            composable(route = "list") {
                 AppListScreen( // list of apps
                     apps = apps, // get all apps from repository
                     onAppClick = { appId ->
