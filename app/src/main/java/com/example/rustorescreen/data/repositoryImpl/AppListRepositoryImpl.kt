@@ -5,8 +5,11 @@ import com.example.rustorescreen.data.dto.AppDto
 import com.example.rustorescreen.data.mapper.AppMapper
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.domain.repositoryInterface.AppListRepository
+import javax.inject.Inject
 
-class AppListRepositoryImpl : AppListRepository {
+
+// инъекция в конструктор для того, чтобы Dagger мог создавать экземпляры этого класса
+class AppListRepositoryImpl @Inject constructor() : AppListRepository {
     private val appListApi = AppListAPI()
     private val appMapper = AppMapper()
 

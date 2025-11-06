@@ -3,6 +3,7 @@ package com.example.rustorescreen.di
 import com.example.rustorescreen.data.repositoryImpl.AppListRepositoryImpl
 import com.example.rustorescreen.domain.repositoryInterface.AppListRepository
 import com.example.rustorescreen.domain.useCase.GetAppListUseCase
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -11,17 +12,17 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppListModule {
+abstract class AppListModule {
 
-    @Provides
+    @Binds // Биндим реализацию репозитория к его интерфейсу
     @Singleton
-    fun provideGetAppListUseCase(repository: AppListRepository): GetAppListUseCase {
-        return GetAppListUseCase(repository)
-    }
+    abstract fun bindAppListRepository(impl: AppListRepositoryImpl): AppListRepository
 
-    @Provides
-    @Singleton
-    fun provideAppListRepository(): AppListRepository {
-        return AppListRepositoryImpl()
+    companion object {
+        @Provides
+        @Singleton
+        fun provideGetAppListUseCase(repository: AppListRepository): GetAppListUseCase {
+            return GetAppListUseCase(repository)
+        }
     }
 }
