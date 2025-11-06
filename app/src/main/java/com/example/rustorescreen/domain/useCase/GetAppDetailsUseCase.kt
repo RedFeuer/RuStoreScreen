@@ -6,12 +6,8 @@ import com.example.rustorescreen.domain.repositoryInterface.AppDetailsRepository
 class GetAppDetailsUseCase(
     private val appDetailsRepository: AppDetailsRepository
 ) {
-    suspend operator fun invoke(id: Int) : AppDetails {
+    suspend operator fun invoke(id: String) : AppDetails {
         val appDetails: AppDetails = appDetailsRepository.getById(id)
-
-        if (appDetails.id < 0) {
-            throw IllegalArgumentException("App with name: ${appDetails.name} has id: ${appDetails.id}. But id must be non-negative.")
-        }
 
         return appDetails
     }
