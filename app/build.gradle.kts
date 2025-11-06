@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     kotlin("kapt") // подключение KAPT для Hilt
     id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.21"
 }
 
 android {
@@ -71,6 +72,11 @@ dependencies {
 
     // Hilt + Compose Navigation
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    // Retrofit + Kotlinx Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("com.squareup.retrofit2:converter-kotlinx-serialization:3.0.0")
+    implementation("com.squareup.okhttp3:okhttp:5.2.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
