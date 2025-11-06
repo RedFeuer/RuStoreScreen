@@ -4,5 +4,5 @@ import com.example.rustorescreen.domain.domainModel.AppDetails
 
 // Repository interface for fetching App data
 interface AppListRepository {
-    fun get(): List<AppDetails>
+    suspend fun get(): List<AppDetails>
 }

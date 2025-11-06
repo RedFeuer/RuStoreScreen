@@ -9,11 +9,12 @@ import javax.inject.Inject
 
 
 // инъекция в конструктор для того, чтобы Dagger мог создавать экземпляры этого класса
-class AppListRepositoryImpl @Inject constructor() : AppListRepository {
-    private val appListApi = AppListAPI()
-    private val appMapper = AppMapper()
+class AppListRepositoryImpl @Inject constructor(
+    private val appListApi: AppListAPI,
+    private val appMapper: AppMapper
+) : AppListRepository {
 
-    override fun get() : List<AppDetails> {
+    override suspend fun get() : List<AppDetails> {
         val dtoList: List<AppDetailsDto> = appListApi.getAppList() // Fetches the List of AppDto from the API
         val domainList: List<AppDetails> = dtoList.map{ dto -> appMapper.toDomainModel(dto) } // Maps the List<AppDto> to List<App>(Domain Model)
         return domainList
