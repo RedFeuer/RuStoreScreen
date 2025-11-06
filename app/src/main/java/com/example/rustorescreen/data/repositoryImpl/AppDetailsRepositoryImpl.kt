@@ -1,23 +1,24 @@
 package com.example.rustorescreen.data.repositoryImpl
 
 import com.example.rustorescreen.data.api.AppListAPI
-import com.example.rustorescreen.data.dto.AppDto
+import com.example.rustorescreen.data.dto.AppDetailsDto
 import com.example.rustorescreen.data.mapper.AppMapper
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.domain.repositoryInterface.AppDetailsRepository
 import javax.inject.Inject
 
 // инъекция в конструктор для того, чтобы Dagger мог создавать экземпляры этого класса
-class AppDetailsRepositoryImpl @Inject constructor(): AppDetailsRepository {
-    private val appListApi = AppListAPI()
-    private val appMapper = AppMapper()
+class AppDetailsRepositoryImpl @Inject constructor(
+    private val appListApi: AppListAPI,
+    private val appMapper: AppMapper
+): AppDetailsRepository {
 
     /* converts dto -> domainModel or throws exception,
     * if there is no such app in AppList */
-    override suspend fun getById(id: Int): AppDetails {
-        val dto: AppDto
+    override suspend fun getById(id: String): AppDetails {
+        val dto: AppDetailsDto
         try {
-            dto= appListApi.getById(id) // Fetches the AppDto from the API by id
+            dto= appListApi.getAppById(id) // Fetches the AppDto from the API by id
         }
         catch(e: NoSuchElementException) {
             throw e // rethrow the exception if the app is not found
