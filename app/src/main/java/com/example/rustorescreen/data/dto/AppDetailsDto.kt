@@ -1,9 +1,12 @@
 package com.example.rustorescreen.data.dto
 
 import com.example.rustorescreen.domain.domainModel.AppCategory
+import kotlinx.serialization.Serializable
 
-data class AppDto(
-    val id: Int,
+
+@Serializable
+data class AppDetailsDto(
+    val id: String,
     val title: String,
     val developer: String,
     val category: AppCategory,
