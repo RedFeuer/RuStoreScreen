@@ -3,7 +3,7 @@ package com.example.rustorescreen.data.mapper
 import com.example.rustorescreen.data.dto.AppDetailsDto
 import com.example.rustorescreen.domain.domainModel.AppDetails
 
-class AppMapper {
+class AppDetailsMapper {
     fun toDomainModel(dto: AppDetailsDto): AppDetails = AppDetails (
         name = dto.title,
         developer = dto.developer,
