@@ -5,6 +5,7 @@ import com.example.rustorescreen.domain.domainModel.AppDetails
 
 class AppDetailsMapper {
     fun toDomainModel(dto: AppDetailsDto): AppDetails = AppDetails (
+        id = dto.id,
         name = dto.title,
         developer = dto.developer,
         category = dto.category,
