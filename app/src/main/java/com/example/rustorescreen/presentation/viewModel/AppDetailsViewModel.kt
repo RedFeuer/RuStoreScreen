@@ -23,7 +23,7 @@ class AppDetailsViewModel  @Inject constructor (
     private val getAppDetailsUseCase: GetAppDetailsUseCase,
     savedStateHandle: SavedStateHandle, // для получения сохраненного состояния(включая параметры навигации)
 ): ViewModel() {
-    private val appId: Int = checkNotNull(savedStateHandle.get<Int>("appId"))
+    private val appId: String = checkNotNull(savedStateHandle.get<String>("appId"))
 
     private val _state = MutableStateFlow<AppDetailsState>(AppDetailsState.Loading)
     val state: StateFlow<AppDetailsState> = _state.asStateFlow()

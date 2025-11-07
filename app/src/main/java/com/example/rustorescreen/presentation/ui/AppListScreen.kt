@@ -45,7 +45,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun AppListScreen(
-    onAppClick: (Int) -> Unit
+    onAppClick: (String) -> Unit
 ) {
     val viewModel = hiltViewModel<AppListViewModel>()
     val state = viewModel.state.collectAsState() // подписка на состояние(дает реактивное обновление)
@@ -117,7 +117,7 @@ private fun ObserveEvents(
 @Composable
 private fun AppListContent(
     apps: List<AppDetails>,
-    onAppClick: (Int) -> Unit,
+    onAppClick: (String) -> Unit,
     onIconClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
