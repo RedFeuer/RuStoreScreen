@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.useCase.GetAppListUseCase
+import com.example.rustorescreen.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -19,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AppListViewModel @Inject constructor(
     private val getAppListUseCase: GetAppListUseCase,
+    private val logger: Logger,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<AppListState>(AppListState.Loading)
@@ -47,11 +49,13 @@ class AppListViewModel @Inject constructor(
             /*like try-catch*/
             runCatching {
                 val appList = getAppListUseCase()
+                logger.d("App list loaded successfully, count: ${appList.size}")
 
                 _state.value = AppListState.Content(
                     appList = appList
                 )
-        }.onFailure {
+        }.onFailure { error ->
+                logger.e(message = "Failed to load app list", throwable = error) // логируем ошибку
                 _state.value = AppListState.Error // set error state if exception occurs
             }
         }

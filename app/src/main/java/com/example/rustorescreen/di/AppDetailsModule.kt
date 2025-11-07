@@ -12,8 +12,11 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -37,13 +40,32 @@ abstract class AppDetailsModule {
             return AppDetailsMapper()
         }
 
+        @Provides
+        @Singleton
+        fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.level = HttpLoggingInterceptor.Level.BODY
+            return interceptor
+        }
+
+        @Provides
+        @Singleton
+        fun provideOkHttpClient(logging: HttpLoggingInterceptor): OkHttpClient {
+            return OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(5, TimeUnit.SECONDS)
+                .build()
+        }
+
         // Предоставляем Retrofit для AppDetailsAPI
         @Provides
         @Singleton
-        fun provideRetrofitAppDetailsAPI(): Retrofit {
+        fun provideRetrofitAppDetailsAPI(client: OkHttpClient): Retrofit {
             val contentType = "application/json".toMediaType()
             val json = Json { ignoreUnknownKeys = true }
             return Retrofit.Builder()
+                .client(client) // перехватчик HTTP-запросов
                 .baseUrl("http://185.103.109.134/") // Базовый URL для API
                 .addConverterFactory(json.asConverterFactory(contentType))
                 .build()
