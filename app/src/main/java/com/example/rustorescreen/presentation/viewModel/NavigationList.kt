@@ -1,5 +1,6 @@
 package com.example.rustorescreen.presentation.viewModel
 
+import android.net.Uri
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,10 +14,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.rustorescreen.data.repositoryImpl.AppListRepositoryImpl
-import com.example.rustorescreen.domain.domainModel.AppDetails
-import com.example.rustorescreen.domain.repositoryInterface.AppListRepository
-import com.example.rustorescreen.domain.useCase.GetAppListUseCase
 import com.example.rustorescreen.presentation.ui.AppDetailsScreen
 import com.example.rustorescreen.presentation.ui.AppListScreen
 
@@ -40,19 +37,20 @@ internal fun AppRoot() {
             composable(route = "list") { // экран списка приложений
                 AppListScreen( // list of apps
                     onAppClick = { appId ->
-                        nav.navigate("details/$appId") // navigate to details screen
+                        nav.navigate("details/${Uri.encode(appId)}") // navigate to details screen
                     }
                 )
             }
             composable( // экран конкретного приложения
-                route = "details/{appId}", // details screen with appId argument
-                arguments = listOf(navArgument("appId") { type = NavType.IntType }), // appId is Int
+                route = "details/{appId}", // путь к экрану конкретного приложения
+                arguments = listOf(navArgument("appId") { type = NavType.StringType }), // appId is String
             ) { backStackEntry ->
                 val viewModel: AppDetailsViewModel = hiltViewModel(viewModelStoreOwner = backStackEntry)
                 AppDetailsScreen(
                     app = null,
                     viewModel = viewModel,
-                    onBack = { nav.popBackStack() }, // details of app with back action
+                    /* pop, чтобы вернуться к экрану с списком приложений при нажатии клавиши "Назад" */
+                    onBack = { nav.popBackStack() },
                 )
             }
         }
