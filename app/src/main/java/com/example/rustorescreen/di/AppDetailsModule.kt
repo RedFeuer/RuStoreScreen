@@ -66,7 +66,7 @@ abstract class AppDetailsModule {
             val json = Json { ignoreUnknownKeys = true }
             return Retrofit.Builder()
                 .client(client) // перехватчик HTTP-запросов
-                .baseUrl("http://185.103.109.134/") // Базовый URL для API
+                .baseUrl("http://185.103.109.134") // Базовый URL для API
                 .addConverterFactory(json.asConverterFactory(contentType))
                 .build()
         }
