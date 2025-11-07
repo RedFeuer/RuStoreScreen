@@ -85,7 +85,6 @@ private fun getCategoryText(category: AppCategory): String = when (category) {
     AppCategory.EDUCATION -> "Образование"
     AppCategory.ENTERTAINMENT -> "Развлечения"
     AppCategory.MUSIC -> "Музыка"
-    AppCategory.VIDEO -> "Видео"
     AppCategory.PHOTOGRAPHY -> "Фотография"
     AppCategory.HEALTH -> "Здоровье"
     AppCategory.SPORTS -> "Спорт"
@@ -93,11 +92,13 @@ private fun getCategoryText(category: AppCategory): String = when (category) {
     AppCategory.BOOKS -> "Книги"
     AppCategory.BUSINESS -> "Бизнес"
     AppCategory.FINANCE -> "Финансы"
+    AppCategory.LIFESTYLE -> "Образ жизни"
     AppCategory.TRAVEL -> "Путешествия"
     AppCategory.MAPS -> "Карты"
-    AppCategory.FOOD -> "Еда"
+    AppCategory.FOOD -> "Еда и напитки"
     AppCategory.SHOPPING -> "Покупки"
     AppCategory.UTILITIES -> "Утилиты"
+    AppCategory.WEATHER -> "Погода"
 }
 
 //@Preview

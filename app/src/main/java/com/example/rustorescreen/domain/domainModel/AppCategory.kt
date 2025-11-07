@@ -1,7 +1,9 @@
 package com.example.rustorescreen.domain.domainModel
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class AppCategory {
     @SerialName("Приложения")
     APP,
@@ -12,7 +14,7 @@ enum class AppCategory {
     @SerialName("Производительность")
     PRODUCTIVITY,
 
-    @SerialName("Социальные сети")
+    @SerialName("Общение")
     SOCIAL,
 
     @SerialName("Образование")
@@ -24,13 +26,13 @@ enum class AppCategory {
     @SerialName("Музыка")
     MUSIC,
 
-    @SerialName("Видео")
-    VIDEO,
+//    @SerialName("Фото и видео")
+//    VIDEO,
 
-    @SerialName("Фотография")
+    @SerialName("Фото и видео")
     PHOTOGRAPHY,
 
-    @SerialName("Здоровье")
+    @SerialName("Здоровье и фитнес")
     HEALTH,
 
     @SerialName("Спорт")
@@ -39,7 +41,7 @@ enum class AppCategory {
     @SerialName("Новости")
     NEWS,
 
-    @SerialName("Книги")
+    @SerialName("Книги и справочники")
     BOOKS,
 
     @SerialName("Бизнес")
@@ -48,18 +50,24 @@ enum class AppCategory {
     @SerialName("Финансы")
     FINANCE,
 
+    @SerialName("Образ жизни")
+    LIFESTYLE,
+
     @SerialName("Путешествия")
     TRAVEL,
 
-    @SerialName("Карты")
+    @SerialName("Навигация")
     MAPS,
 
-    @SerialName("Еда")
+    @SerialName("Еда и напитки")
     FOOD,
 
-    @SerialName("Покупки")
+    @SerialName("Шопинг")
     SHOPPING,
 
     @SerialName("Утилиты")
-    UTILITIES
+    UTILITIES,
+    
+    @SerialName("Погода")
+    WEATHER,
 }
