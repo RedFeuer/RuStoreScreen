@@ -37,6 +37,9 @@ internal fun AppRoot() {
             composable(route = "list") { // экран списка приложений
                 AppListScreen( // list of apps
                     onAppClick = { appId ->
+                        /*Uri.encode декодирует пробелы, / и кириллицу в #HH, чтобы
+                        * строка безопасно вошла в путь, чтобы не сломать граф
+                        * навигации nav.navigate*/
                         nav.navigate("details/${Uri.encode(appId)}") // navigate to details screen
                     }
                 )
@@ -45,6 +48,10 @@ internal fun AppRoot() {
                 route = "details/{appId}", // путь к экрану конкретного приложения
                 arguments = listOf(navArgument("appId") { type = NavType.StringType }), // appId is String
             ) { backStackEntry ->
+                /* получаем ViewModel, привязанную к конкретному backStackEntry
+                   Делаем hiltViewModel(viewModelStoreOwner = backStackEntry), чтобы scope ViewModel
+                   соответствовал элементу back stack — тогда ViewModel будет жить пока активен этот
+                    backStackEntry и корректно очищен после его удаления из навигации.*/
                 val viewModel: AppDetailsViewModel = hiltViewModel(viewModelStoreOwner = backStackEntry)
                 AppDetailsScreen(
                     app = null,
