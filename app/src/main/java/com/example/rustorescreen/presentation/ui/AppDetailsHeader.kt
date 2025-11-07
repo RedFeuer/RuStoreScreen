@@ -93,7 +93,6 @@ private fun getCategoryText(category: AppCategory): String = when (category) {
     AppCategory.BOOKS -> "Книги"
     AppCategory.BUSINESS -> "Бизнес"
     AppCategory.FINANCE -> "Финансы"
-    AppCategory.LIFESTYLE -> "Образ жизни"
     AppCategory.TRAVEL -> "Путешествия"
     AppCategory.MAPS -> "Карты"
     AppCategory.FOOD -> "Еда"
