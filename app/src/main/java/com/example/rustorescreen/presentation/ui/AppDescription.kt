@@ -13,6 +13,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.rustorescreen.R
 
+/**
+ * Компонент описания приложения с возможностью развернуть/свернуть текст.
+ *
+ * @param description Текст описания приложения.
+ * @param expanded Флаг, указывающий, развернут ли текст. Если `true` — показываются все строки,
+ *                 если `false` — ограничено двумя строками.
+ * @param onExpandClick Колбэк, вызываемый при нажатии на кнопку развернуть/свернуть.
+ * @param modifier Модификатор для внешнего контейнера.
+ */
 @Composable
 fun AppDescription(
     description: String,
@@ -26,12 +35,11 @@ fun AppDescription(
         Text(
             text = description,
             style = MaterialTheme.typography.bodyLarge,
-            /*shows all lines, when expanded
-            * if !expended shows only 2 lines*/
+            // Показываем все строки, когда развернуто; иначе только 2 строки.
             maxLines = if (!expanded) Int.MAX_VALUE else 2,
             overflow = TextOverflow.Ellipsis
         )
-        // Expand/collapse description button
+        // Кнопка Развернуть/Свернуть
         TextButton(
             onClick = onExpandClick
         ) {

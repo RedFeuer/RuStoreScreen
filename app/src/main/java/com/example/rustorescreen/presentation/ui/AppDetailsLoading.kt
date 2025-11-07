@@ -7,6 +7,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 
+/**
+ * Отображает центрированный индикатор загрузки для экрана конкретного приложения.
+ *
+ * Используется для показа состояния загрузки данных.
+ *
+ * @param modifier Modifier для настройки размеров, отступов и позиционирования контейнера.
+ */
 @Composable
 fun AppDetailsLoading (modifier: Modifier = Modifier) {
     Box(

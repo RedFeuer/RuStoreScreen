@@ -10,6 +10,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.rustorescreen.R
 
+/**
+ * Компонент кнопки установки приложения.
+ *
+ * @param onClick действие, выполняемое при нажатии на кнопку(установка - WIP).
+ * @param modifier модификатор для настройки внешнего вида и расположения кнопки.
+ */
 @Composable
 fun InstallButton(
     onClick: () -> Unit,

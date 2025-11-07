@@ -1,6 +1,5 @@
 package com.example.rustorescreen.presentation.ui
 
-import android.R.style.Theme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,8 +11,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 
+/**
+ * Toolbar composable с кнопками "Back" и "Share".
+ *
+ * Параметры:
+ * @param onBackClick вызывается при нажатии на кнопку "Back".
+ * @param onShareClick вызывается при нажатии на кнопку "Share".
+ * @param modifier optional модификатор для контейнера Row.
+ */
 @Composable
 internal fun Toolbar(
     onBackClick: () -> Unit,

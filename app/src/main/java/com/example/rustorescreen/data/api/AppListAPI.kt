@@ -4,18 +4,43 @@ import com.example.rustorescreen.data.dto.AppDetailsDto
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-
+/**
+ * API интерфейс для получения списка приложений и деталей конкретного приложения.
+ *
+ * Использует Retrofit для выполнения HTTP-запросов к бэкенду.
+ *
+ * Endpoints:
+ *  - GET `/catalog` — возвращает список приложений
+ *  - GET `/catalog/{id}` — возвращает конкретное приложение по уникальному id
+ */
 interface AppListAPI {
 
+
+    /**
+     * Получить конкретное приложение по его id.
+     *
+     * @param id Идентификатор приложения (String).
+     * @return [AppDetailsDto] с полями приложения.
+     * @throws retrofit2.HttpException при ошибках HTTP.
+     * @throws java.io.IOException при проблемах сети.
+     */
     @GET("/catalog/{id}")
     suspend fun getAppById(@Path("id") id: String): AppDetailsDto
 
+    /**
+     * Получить список всех доступных приложений.
+     *
+     * @return Список [AppDetailsDto].
+     * @throws retrofit2.HttpException при ошибках HTTP.
+     * @throws java.io.IOException при проблемах сети.
+     */
     @GET("/catalog")
     suspend fun getAppList(): List<AppDetailsDto>
 
 }
 
-///* hardcoded
+///* LEGACY, НО ПУСТЬ БУДЕТ НА ПАМЯТЬ
+// hardcoded
 // ДО ВНЕДРЕНИЯ API*/
 //class AppListAPI {
 //    private val items = listOf(

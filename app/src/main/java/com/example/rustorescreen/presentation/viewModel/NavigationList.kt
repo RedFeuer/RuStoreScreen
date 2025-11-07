@@ -18,6 +18,27 @@ import com.example.rustorescreen.presentation.ui.AppDetailsScreen
 import com.example.rustorescreen.presentation.ui.AppListScreen
 
 /* граф навигации в приложении */
+/**
+ * Основной корневой composable, содержащий NavHost и AppBar(Заголовок приложения и элементы управления).
+ *
+ * Поведение:
+ * - Создаёт `NavController` через `rememberNavController`.
+ * - Оборачивает содержание в `Scaffold` с `CenterAlignedTopAppBar`.
+ * - Настраивает `NavHost` с двумя маршрутами:
+ *   - `list` — экран списка приложений (`AppListScreen`). При клике на элемент
+ *     вызывается `nav.navigate("details/${Uri.encode(appId)}")`, где `Uri.encode`
+ *     безопасно кодирует пробелы, слэши и кириллицу в escape-последовательности.
+ *   - `details/{appId}` — экран конкретного приложения (`AppDetailsScreen`). Для этого
+ *     экрана аргумент `appId` объявлен как `NavType.StringType`. ViewModel для экрана
+ *     создаётся через `hiltViewModel(viewModelStoreOwner = backStackEntry)`, чтобы
+ *     scope ViewModel был привязан к конкретному элементу back stack и корректно
+ *     очищался при удалении этого backStackEntry.
+ *
+ * Параметры/замечания:
+ * - Используется экспериментальный Material3 API, поэтому функция помечена `@OptIn`.
+ * - Обработчик `onBack` в экране конкретного приложения (кнопка "Назад") вызывает
+ * `nav.popBackStack()` — возврат на список приложений.
+ */
 @OptIn(ExperimentalMaterial3Api::class) // using Material3 experimental API
 @Composable
 internal fun AppRoot() {

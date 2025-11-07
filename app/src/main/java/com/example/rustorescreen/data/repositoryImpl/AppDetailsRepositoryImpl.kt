@@ -7,14 +7,24 @@ import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.domain.repositoryInterface.AppDetailsRepository
 import javax.inject.Inject
 
-// инъекция в конструктор для того, чтобы Dagger мог создавать экземпляры этого класса
+/**
+ * Реализация [AppDetailsRepository].
+ *
+ * Получает данные у [AppListAPI] и преобразует DTO в доменную модель с помощью [AppDetailsMapper].
+ * Конструктор помечен `@Inject` для создания экземпляров через Dagger.
+ */
 class AppDetailsRepositoryImpl @Inject constructor(
     private val appListApi: AppListAPI,
     private val appDetailsMapper: AppDetailsMapper
 ): AppDetailsRepository {
 
-    /* converts dto -> domainModel or throws exception,
-    * if there is no such app in AppList */
+    /**
+     * Получить детали приложения по идентификатору.
+     *
+     * @param id идентификатор приложения
+     * @return [AppDetails] доменная модель приложения
+     * @throws NoSuchElementException если приложение с указанным id не найдено
+     */
     override suspend fun getById(id: String): AppDetails {
         val dto: AppDetailsDto
         try {

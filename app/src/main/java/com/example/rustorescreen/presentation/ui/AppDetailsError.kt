@@ -15,6 +15,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.rustorescreen.R
 
+/**
+ * Отображает состояние ошибки загрузки конкретного приложения.
+ *
+ * @param onRefreshClick Lambda, вызываемая при нажатии на кнопку обновления.
+ * @param modifier Модификатор для внешнего контейнера компонента.
+ */
 @Composable
 fun AppDetailsError(
     onRefreshClick: () -> Unit,
@@ -25,6 +31,7 @@ fun AppDetailsError(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        // Текст с описанием ошибки
         Text(
             text = stringResource(R.string.app_details_error),
             fontStyle = MaterialTheme.typography.headlineMedium.fontStyle,
@@ -32,7 +39,7 @@ fun AppDetailsError(
 
         Spacer(Modifier.height(12.dp))
 
-        // Refresh button
+        // Кнопка для повторной попытки загрузить экран приложения
         Button(
             onClick = onRefreshClick,
         ) {

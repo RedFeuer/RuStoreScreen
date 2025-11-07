@@ -17,31 +17,62 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+/**
+ * ViewModel для экрана списка приложений.
+ *
+ * Управляет состоянием UI через [state] и одноразовыми событиями через [events].
+ *
+ * @param getAppListUseCase UseCase, возвращающий список приложений.
+ * @param logger Логгер для записи ошибок и отладочной информации в Logcat.
+ */
 @HiltViewModel
 class AppListViewModel @Inject constructor(
     private val getAppListUseCase: GetAppListUseCase,
-    private val logger: Logger,
+    private val logger: Logger, // чтобы логировать проблемы при подгрузке и работе с API в Logcat
 ) : ViewModel() {
 
+    /** Приватный поток состояния экрана. Изначально устанавливается в [AppListState.Loading]. */
     private val _state = MutableStateFlow<AppListState>(AppListState.Loading)
+
+    /** Публичный `StateFlow` для подписки UI на изменения состояния(т.н. реактивной подписки). */
     val state : StateFlow<AppListState> = _state.asStateFlow()
 
-    // TODO: events
+
+    /** Приватный канал для одноразовых событий экрана */
     private val _events = Channel<AppListEvent> (
         capacity = BUFFERED,
     )
+
+    /** Публичный flow одноразовых событий для подписки UI. */
     val events = _events.receiveAsFlow()
 
+    /**
+     * При создании ViewModel запускаем загрузку списка приложений.
+     */
     init {
         getAppList()
     }
 
+    /**
+     * Посылает одноразовое событие-подсказку при тапе на иконку приложения.
+     *
+     * @param messageResId Ресурс строки с сообщением, по умолчанию `R.string.easter_egg_message`(пасхалка).
+     */
     fun showTapOnIconMessage(@StringRes messageResId: Int = R.string.easter_egg_message) {
         viewModelScope.launch {
             _events.send(AppListEvent.TapOnIcon(messageResId)) // отправка события в канал
         }
     }
 
+    /**
+     * Загрузка списка приложений.
+     *
+     * Поведение:
+     * 1. Устанавливает состояние в `Loading`.
+     * 2. Вызывает [getAppListUseCase]. В нем с помощью репозитория получаем список приложений
+     * 3. При успешной загрузке устанавливает состояние `Content` с полученным списком.
+     * 4. При ошибке логирует проблему и устанавливает состояние `Error`.
+     */
     fun getAppList() {
         viewModelScope.launch {
             _state.value = AppListState.Loading // set loading state

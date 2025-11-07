@@ -4,7 +4,21 @@ import com.example.rustorescreen.domain.domainModel.AppCategory
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
+/**
+ * DTO для подробной информации о приложении.
+ *
+ * Используется для сериализации/десериализации в/из JSON при обмене данными с сервером.
+ *
+ * @property id Уникальный идентификатор приложения.
+ * @property title Название приложения.
+ * @property developer Название разработчика или студии.
+ * @property category Категория приложения (например, GAME, APP).
+ * @property ageRating Возрастной рейтинг (например, 3, 7, 12, 16, 18).
+ * @property size Размер приложения в мегабайтах.
+ * @property iconUrl URL иконки приложения.
+ * @property screenshotUrlList Список URL-адресов скриншотов приложения.
+ * @property description Краткое описание приложения.
+ */
 @Serializable
 data class AppDetailsDto(
 

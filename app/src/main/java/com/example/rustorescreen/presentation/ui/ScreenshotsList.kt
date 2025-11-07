@@ -19,6 +19,17 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.rustorescreen.R
 
+/**
+ * Отображает заголовок и горизонтальный список скриншотов приложения.
+ *
+ * Компонент рендерит заголовок секции и пэйджер (`HorizontalPager`) с изображениями,
+ * загружаемыми через Coil (`AsyncImage`). Каждый скриншот масштабируется до
+ * соотношения сторон 16:9 и скругляется с радиусом 8.dp.
+ *
+ * @param screenshotUrlList список URL-строк с изображениями скриншотов.
+ * @param contentPadding отступы, которые применяются к заголовку и к содержимому пэйджера.
+ * @param modifier дополнительный [Modifier], применяемый к корневому контейнеру.
+ */
 @Composable
 fun ScreenshotsList(
     screenshotUrlList: List<String>,

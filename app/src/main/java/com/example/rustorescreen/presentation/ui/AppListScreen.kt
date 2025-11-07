@@ -43,6 +43,19 @@ import com.example.rustorescreen.presentation.viewModel.AppListState
 import com.example.rustorescreen.presentation.viewModel.AppListViewModel
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Отображает экран со списком приложений.
+ *
+ * Подписывается на `AppListViewModel` через Hilt и:
+ * - наблюдает состояние UI (`viewModel.state`) и отображает соответствующий контент:
+ *   * `AppListState.Loading` — индикатор загрузки,
+ *   * `AppListState.Error` — экран ошибки с кнопкой обновления,
+ *   * `AppListState.Content` — список приложений.
+ * - подписывается на поток одноразовых событий (`viewModel.events`) и показывает `Snackbar`
+ *   через переданный `SnackbarHostState` при необходимости.
+ *
+ * @param onAppClick Колбек, вызываемый при клике на элемент списка. Получает `app.id`. Переход на экран конкретного приложения
+ */
 @Composable
 fun AppListScreen(
     onAppClick: (String) -> Unit
@@ -96,6 +109,16 @@ fun AppListScreen(
     }
 }
 
+/**
+ * Наблюдает одноразовые события из ViewModel и показывает Snackbar при необходимости.
+ *
+ * Подписывается на переданный [events] внутри [LaunchedEffect]. При получении события
+ * [AppListEvent.TapOnIcon] отображает сообщение в [snackbarHostState].
+ * При необходимости можно добавлять сюда новые события.
+ *
+ * @param events поток одноразовых событий, испускаемых ViewModel (например, [AppListEvent]).
+ * @param snackbarHostState состояние для отображения Snackbar.
+ */
 @Composable
 private fun ObserveEvents(
     events: Flow<AppListEvent>,
@@ -114,6 +137,17 @@ private fun ObserveEvents(
     }
 }
 
+/**
+ * Отображает контент со списком приложений.
+ *
+ * Использует [LazyColumn] для рендеринга переданного списка [apps]. При клике на элемент
+ * вызывается [onAppClick] с `app.id`. При клике на иконку приложения вызывается [onIconClick].
+ *
+ * @param apps список данных типа [AppDetails] для отображения.
+ * @param onAppClick колбек, вызываемый при клике на элемент списка, принимает `id` приложения.
+ * @param onIconClick колбек, вызываемый при клике на иконку приложения.
+ * @param modifier модификатор для корневого контейнера.
+ */
 @Composable
 private fun AppListContent(
     apps: List<AppDetails>,
@@ -133,6 +167,15 @@ private fun AppListContent(
     }
 }
 
+/**
+ * Экран ошибки загрузки списка приложений.
+ *
+ * Показывает сообщение об ошибке и кнопку обновления. При нажатии на кнопку вызывается
+ * [onRefreshClick], что позволяет повторно запросить список.
+ *
+ * @param onRefreshClick колбек для повторной попытки загрузки.
+ * @param modifier модификатор для корневого контейнера.
+ */
 @Composable
 private fun AppListError(
     onRefreshClick: () -> Unit,
@@ -159,6 +202,13 @@ private fun AppListError(
     }
 }
 
+/**
+ * Центрированный индикатор загрузки.
+ *
+ * Отображает [CircularProgressIndicator] по центру предоставленного контейнера.
+ *
+ * @param modifier модификатор для контейнера индикатора.
+ */
 @Composable
 private fun AppListLoading(modifier: Modifier = Modifier) {
     Box(
@@ -169,6 +219,19 @@ private fun AppListLoading(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Отображает одну строку списка приложения.
+ *
+ * Компонент показывает:
+ * - иконку приложения (кликабельна, вызывает `onIconClick`),
+ * - название, описание и категорию приложения.
+ * Вся строка кликабельна и вызывает `onAppClick` — используется для перехода
+ * на экран конкретного приложения.
+ *
+ * @param app данные приложения [AppDetails]
+ * @param onAppClick вызывается при клике на всю строку (передаётся для навигации)
+ * @param onIconClick вызывается при клике на иконку (передается для отображения пасхалки)
+ */
 @Composable
 private fun AppRow(
     app: AppDetails,
@@ -182,7 +245,6 @@ private fun AppRow(
             .padding(24.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        /* FIX ICONS FOR URLS */
         AsyncImage(
             model = app.iconUrl,
             contentDescription = null,

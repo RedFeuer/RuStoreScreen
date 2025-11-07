@@ -25,6 +25,14 @@ import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.domainModel.AppCategory
 import com.example.rustorescreen.domain.domainModel.AppDetails
 
+/**
+ * Заголовок экрана конкретного приложения.
+ *
+ * Отображает иконку приложения, категорию, имя разработчика, возрастной рейтинг и размер.
+ *
+ * @param appDetails объект [AppDetails] содержащий данные приложения для отображения.
+ * @param modifier модификатор для настройки внешнего вида и расположения корневого [Row].
+ */
 @Composable
 fun AppDetailsHeader(
     appDetails: AppDetails,
@@ -76,6 +84,14 @@ fun AppDetailsHeader(
     }
 }
 
+/**
+ * Возвращает локализованную строку категории по значению [AppCategory].
+ *
+ * Используется для отображения текстовой метки категории над именем разработчика.
+ *
+ * @param category категория приложения.
+ * @return строковое представление категории на русском языке.
+ */
 @Composable
 private fun getCategoryText(category: AppCategory): String = when (category) {
     AppCategory.APP -> "Приложения"
