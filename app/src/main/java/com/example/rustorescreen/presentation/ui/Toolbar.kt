@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
  * @param onShareClick вызывается при нажатии на кнопку "Share".
  * @param modifier optional модификатор для контейнера Row.
  */
+@Suppress("UNUSED_PARAMETER")
 @Composable
 internal fun Toolbar(
     onBackClick: () -> Unit,
