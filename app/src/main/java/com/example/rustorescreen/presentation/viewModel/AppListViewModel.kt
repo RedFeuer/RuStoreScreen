@@ -26,6 +26,14 @@ import javax.inject.Inject
  * @param logger Логгер для записи ошибок и отладочной информации в Logcat.
  */
 @HiltViewModel
+/**
+ * ViewModel для экрана списка приложений.
+ *
+ * Управляет состоянием UI через [state] и одноразовыми событиями через [events].
+ *
+ * @param getAppListUseCase UseCase, возвращающий список приложений.
+ * @param logger Логгер для записи ошибок и отладочной информации в Logcat.
+ */
 class AppListViewModel @Inject constructor(
     private val getAppListUseCase: GetAppListUseCase,
     private val logger: Logger, // чтобы логировать проблемы при подгрузке и работе с API в Logcat
