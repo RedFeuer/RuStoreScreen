@@ -1,6 +1,7 @@
 package com.example.rustorescreen.domain.repositoryInterface
 
 import com.example.rustorescreen.domain.domainModel.AppDetails
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Репозиторий для получения конкретного приложения.
@@ -12,8 +13,8 @@ interface AppDetailsRepository {
      * Получить детали приложения по идентификатору.
      *
      * @param id идентификатор приложения
-     * @return [AppDetails] доменная модель приложения
+     * @return Flow<AppDetails> доменная модель приложения
      * @throws NoSuchElementException если приложение с указанным id не найдено
      */
-    suspend fun getById(id: String): AppDetails
+    suspend fun getById(id: String): Flow<AppDetails>
 }

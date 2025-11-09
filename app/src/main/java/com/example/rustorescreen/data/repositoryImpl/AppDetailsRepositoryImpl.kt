@@ -8,10 +8,10 @@ import com.example.rustorescreen.data.local.AppDetailsEntityMapper
 import com.example.rustorescreen.data.mapper.AppDetailsMapper
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.domain.repositoryInterface.AppDetailsRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import okhttp3.Dispatcher
 import javax.inject.Inject
 
 /**
@@ -44,16 +44,16 @@ class AppDetailsRepositoryImpl @Inject constructor(
             else { // получаем DTO из API
                 val dto: AppDetailsDto
                 try {
-                    dto = appListApi.getAppById(id)// Fetches the AppDto from the API by id
+                    dto = appListApi.getAppById(id)// получаем
                 }
                 catch(e: NoSuchElementException) {
-                    throw e // rethrow the exception if the app is not found
+                    throw e // пробрасываем исключение, если такого id нет
                 }
                 val domainModel: AppDetails = appDetailsMapper.toDomainModel(dto)
 
                 /* кэшируем в базу данных, если такого приложения не было */
                 val entity: AppDetailsEntity = appDetailsEntityMapper.toEntity(domainModel)
-                withContext(context = Dispatcher.IO) {
+                withContext(context = Dispatchers.IO) {
                     dao.insertAppDetails(entity)
                 }
 
