@@ -2,9 +2,16 @@ package com.example.rustorescreen.data.repositoryImpl
 
 import com.example.rustorescreen.data.api.AppListAPI
 import com.example.rustorescreen.data.dto.AppDetailsDto
+import com.example.rustorescreen.data.local.AppDetailsDao
+import com.example.rustorescreen.data.local.AppDetailsEntity
+import com.example.rustorescreen.data.local.AppDetailsEntityMapper
 import com.example.rustorescreen.data.mapper.AppDetailsMapper
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.domain.repositoryInterface.AppDetailsRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
 import javax.inject.Inject
 
 /**
@@ -15,25 +22,43 @@ import javax.inject.Inject
  */
 class AppDetailsRepositoryImpl @Inject constructor(
     private val appListApi: AppListAPI,
-    private val appDetailsMapper: AppDetailsMapper
+    private val dao: AppDetailsDao,
+    private val appDetailsMapper: AppDetailsMapper,
+    private val appDetailsEntityMapper: AppDetailsEntityMapper,
 ): AppDetailsRepository {
 
     /**
-     * Получить детали приложения по идентификатору.
+     * Метод возвращает `Flow<AppDetails>`, чтобы доступ к сети/базе данных и преобразование DTO
+     * выполнялись асинхронно и не блокировали главный поток. Коллекционировать Flow следует
+     * на `Dispatchers.IO`, чтобы избежать долгих операций в UI-потоке.
      *
      * @param id идентификатор приложения
-     * @return [AppDetails] доменная модель приложения
+     * @return Flow<AppDetails> доменная модель приложения
      * @throws NoSuchElementException если приложение с указанным id не найдено
      */
-    override suspend fun getById(id: String): AppDetails {
-        val dto: AppDetailsDto
-        try {
-            dto= appListApi.getAppById(id) // Fetches the AppDto from the API by id
+    override suspend fun getById(id: String): Flow<AppDetails> {
+        return dao.getAppDetails(id).map { entity ->
+            if (entity != null) { // получаем entity из
+                appDetailsEntityMapper.toDomainModel(entity)
+            }
+            else { // получаем DTO из API
+                val dto: AppDetailsDto
+                try {
+                    dto = appListApi.getAppById(id)// Fetches the AppDto from the API by id
+                }
+                catch(e: NoSuchElementException) {
+                    throw e // rethrow the exception if the app is not found
+                }
+                val domainModel: AppDetails = appDetailsMapper.toDomainModel(dto)
+
+                /* кэшируем в базу данных, если такого приложения не было */
+                val entity: AppDetailsEntity = appDetailsEntityMapper.toEntity(domainModel)
+                withContext(context = Dispatcher.IO) {
+                    dao.insertAppDetails(entity)
+                }
+
+                domainModel // возвращаем доменную модель, полученную из API
+            }
         }
-        catch(e: NoSuchElementException) {
-            throw e // rethrow the exception if the app is not found
-        }
-        val domainModel: AppDetails = appDetailsMapper.toDomainModel(dto) // Maps the AppDto to AppDetails (Domain Model)
-        return domainModel
     }
 }
