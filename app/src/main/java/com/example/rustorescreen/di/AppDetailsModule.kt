@@ -25,7 +25,7 @@ import javax.inject.Singleton
  * Привязывает реализацию репозитория и предоставляет провайдеры:
  * - GetAppDetailsUseCase
  * - AppDetailsMapper
- * - HttpLoggingInterceptor / OkHttpClient / Retrofit / AppListAPI
+ * - HttpLoggingInterceptor / OkHttpClient / RetrofitAppDetailsApi / AppListAPI
  *
  * Класс объявлен абстрактным, поскольку содержит `@Binds`\-методы;
  * конкретные `@Provides` размещены в `companion object`.
@@ -68,7 +68,7 @@ abstract class AppDetailsModule {
          */
         @Provides
         @Singleton
-        fun provideAppMapper(): AppDetailsMapper {
+        fun provideAppDetailsMapper(): AppDetailsMapper {
             return AppDetailsMapper()
         }
 
@@ -80,7 +80,7 @@ abstract class AppDetailsModule {
          */
         @Provides
         @Singleton
-        fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+        fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
             val interceptor = HttpLoggingInterceptor()
             interceptor.level = HttpLoggingInterceptor.Level.BODY
             return interceptor
