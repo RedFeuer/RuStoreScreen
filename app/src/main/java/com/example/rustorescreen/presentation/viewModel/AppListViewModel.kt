@@ -87,7 +87,12 @@ class AppListViewModel @Inject constructor(
 
             /*like try-catch*/
             runCatching {
-                val appList = getAppListUseCase()
+                val appListFlow: Flow<List<AppDetails>> = getAppListUseCase()
+c                val collected = mutableListOf<AppDetails>()
+                appListFlow.collect{ emitted->
+                    collected.addAll(elements = emitted) // собираем все приложения из потока
+                }
+                val appList: List<AppDetails> = collected.toList()
                 logger.d("App list loaded successfully, count: ${appList.size}")
 
                 _state.value = AppListState.Content(
