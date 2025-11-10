@@ -88,7 +88,7 @@ class AppListViewModel @Inject constructor(
             /*like try-catch*/
             runCatching {
                 val appListFlow: Flow<List<AppDetails>> = getAppListUseCase()
-c                val collected = mutableListOf<AppDetails>()
+                val collected = mutableListOf<AppDetails>()
                 appListFlow.collect{ emitted->
                     collected.addAll(elements = emitted) // собираем все приложения из потока
                 }
