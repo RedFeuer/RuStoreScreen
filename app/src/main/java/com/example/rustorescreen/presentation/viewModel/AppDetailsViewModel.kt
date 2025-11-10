@@ -5,18 +5,20 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rustorescreen.R
+import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 
 
 /**
@@ -108,7 +110,8 @@ class AppDetailsViewModel  @Inject constructor (
 
             /*like try-catch*/
             runCatching {
-                val appDetails = getAppDetailsUseCase(appId) // fetch app details using the use case
+                val appDetailsFlow: Flow<AppDetails> = getAppDetailsUseCase(appId) // fetch app details using the use case
+                val appDetails: AppDetails = appDetailsFlow.first()
 
                 _state.value = AppDetailsState.Content(
                     appDetails = appDetails,

@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/* TODO: ПЕРЕПИСАТЬ ДОКУМЕНТАЦИЮ */
 /**
  * Реализация [AppDetailsRepository].
  *
@@ -38,7 +39,7 @@ class AppDetailsRepositoryImpl @Inject constructor(
      */
     override suspend fun getById(id: String): Flow<AppDetails> {
         return dao.getAppDetails(id).map { entity ->
-            if (entity != null) { // получаем entity из
+            if (entity != null) { // получаем entity из базы данных
                 appDetailsEntityMapper.toDomainModel(entity)
             }
             else { // получаем DTO из API
@@ -47,7 +48,7 @@ class AppDetailsRepositoryImpl @Inject constructor(
                     dto = appListApi.getAppById(id)// получаем
                 }
                 catch(e: NoSuchElementException) {
-                    throw e // пробрасываем исключение, если такого id нет
+                    throw e // ловим исключение, если такого id нет
                 }
                 val domainModel: AppDetails = appDetailsMapper.toDomainModel(dto)
 

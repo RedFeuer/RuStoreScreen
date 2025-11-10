@@ -11,7 +11,7 @@ class AppDetailsEntityMapper {
         ageRating = entity.ageRating,
         size = entity.size,
         iconUrl = entity.iconUrl,
-        screenshotUrlList = entity.screenshotUrlList,
+        screenshotUrlList = emptyList<String>(),
         description = entity.description
     )
 
@@ -23,7 +23,7 @@ class AppDetailsEntityMapper {
         ageRating = domainModel.ageRating,
         size = domainModel.size,
         iconUrl = domainModel.iconUrl,
-        screenshotUrlList = domainModel.screenshotUrlList,
+        screenshotUrlList = emptyList<String>(),
         description = domainModel.description
     )
 }
