@@ -1,29 +1,20 @@
 package com.example.rustorescreen.data.local
 
 import androidx.room.TypeConverter
-import org.json.JSONArray
+import kotlinx.serialization.json.Json
 
 class ScreenshotsListConverter {
+    private val json = Json { ignoreUnknownKeys = true }
     @TypeConverter
-    fun fromList(list: List<String>?): String? {
-        if (list == null) {
-            return null
-        }
-        val json = JSONArray()
-        list.forEach{ it ->
-            json.put(it)
-        }
-        return json.toString()
+    fun fromList(list: List<String>): String {
+        return json.encodeToString(list)
     }
 
     @TypeConverter
     fun toList(data: String?): List<String> {
-        if (data.isNullOrEmpty()) {
-            return emptyList()
+        if (data.isNullOrBlank()) {
+            return emptyList<String>()
         }
-        val json = JSONArray(data)
-        val result = MutableList<String>(json.length()) { "" }
-        for (i in 0 until json.length()) result[i] = json.optString(i)
-        return result;
+        return json.decodeFromString(data)
     }
 }
