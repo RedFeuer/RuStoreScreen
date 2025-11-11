@@ -14,6 +14,6 @@ data class AppDetailsEntity (
     val ageRating: Int,
     val size: Float,
     val iconUrl: String,
-    val screenshotUrlList: List<String>? = emptyList<String>(),
+    val screenshotUrlList: List<String> = emptyList<String>(),
     val description: String,
 )
