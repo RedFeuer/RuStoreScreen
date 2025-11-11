@@ -1,7 +1,9 @@
 package com.example.rustorescreen.domain.repositoryInterface
 
 import com.example.rustorescreen.domain.domainModel.AppDetails
+import kotlinx.coroutines.flow.Flow
 
+// TODO: переписать документацию после внедрения базы данных
 /**
  * Репозиторий для получения списка приложений.
  *
@@ -16,5 +18,5 @@ interface AppListRepository {
      *
      * @return список `AppDetails` — доменные модели приложений.
      */
-    suspend fun get(): List<AppDetails>
+    suspend fun get(): Flow<List<AppDetails>>
 }

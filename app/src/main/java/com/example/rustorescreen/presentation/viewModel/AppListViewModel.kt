@@ -4,14 +4,19 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rustorescreen.R
+import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.domain.useCase.GetAppListUseCase
 import com.example.rustorescreen.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -88,17 +93,18 @@ class AppListViewModel @Inject constructor(
             /*like try-catch*/
             runCatching {
                 val appListFlow: Flow<List<AppDetails>> = getAppListUseCase()
-                val collected = mutableListOf<AppDetails>()
-                appListFlow.collect{ emitted->
-                    collected.addAll(elements = emitted) // собираем все приложения из потока
-                }
-                val appList: List<AppDetails> = collected.toList()
-                logger.d("App list loaded successfully, count: ${appList.size}")
-
-                _state.value = AppListState.Content(
-                    appList = appList
-                )
-        }.onFailure { error ->
+                appListFlow
+                    .onEach { emitted->
+                        val previous = (_state.value as? AppListState.Content)?.appList ?: emptyList()
+                        val merged = (previous + emitted).distinct() // убираем неуникальные
+                        _state.value = AppListState.Content(appList = merged)
+                    }
+                    .catch { error->
+                        logger.e(message = "Failed to collect app list", throwable = error)
+                        _state.value = AppListState.Error
+                    }
+                    .launchIn(this) // собираем в отдельной корутине, чтобы не блокировать текущую
+            }.onFailure { error ->
                 logger.e(message = "Failed to load app list", throwable = error) // логируем ошибку
                 _state.value = AppListState.Error // set error state if exception occurs
             }

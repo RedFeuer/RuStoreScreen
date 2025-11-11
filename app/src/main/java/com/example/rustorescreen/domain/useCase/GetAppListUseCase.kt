@@ -2,6 +2,9 @@ package com.example.rustorescreen.domain.useCase
 
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.domain.repositoryInterface.AppListRepository
+import kotlinx.coroutines.flow.Flow
+
+// TODO: переписать документацию после внедрения базы данных
 
 /**
  * Use case для получения списка приложений.
@@ -32,8 +35,8 @@ class GetAppListUseCase(
      * @throws Exception пробрасывает исключения, возникающие в репозитории;
      *         при необходимости оборачивать здесь.
      */
-    suspend operator fun invoke(): List<AppDetails> {
-        val apps: List<AppDetails> = appRepository.get()// Fetches the App data from the repository when called
+    suspend operator fun invoke(): Flow<List<AppDetails>> {
+        val apps: Flow<List<AppDetails>> = appRepository.get()// Fetches the App data from the repository when called
 
         return apps
     }
