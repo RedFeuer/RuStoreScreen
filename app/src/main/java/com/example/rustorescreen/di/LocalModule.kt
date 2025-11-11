@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.rustorescreen.data.local.AppDatabase
 import com.example.rustorescreen.data.local.AppDetailsDao
 import com.example.rustorescreen.data.local.AppDetailsEntityMapper
+import com.example.rustorescreen.data.local.AppListDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,6 +29,12 @@ class LocalModule {
     @Singleton
     fun provideAppDetailsDao(database: AppDatabase): AppDetailsDao {
         return database.appDetailsDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppListDao(database: AppDatabase): AppListDao {
+        return database.appListDao()
     }
 
     @Provides
