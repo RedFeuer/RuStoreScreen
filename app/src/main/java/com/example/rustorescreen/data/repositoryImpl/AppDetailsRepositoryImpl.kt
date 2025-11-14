@@ -54,6 +54,7 @@ class AppDetailsRepositoryImpl @Inject constructor(
 
                 /* кэшируем в базу данных, если такого приложения не было */
                 val entity: AppDetailsEntity = appDetailsEntityMapper.toEntity(domainModel)
+                /* переключаем Dispatchers.Default из ViewModel на Dispatchers.IO, чтобы обратиться к БД */
                 withContext(context = Dispatchers.IO) {
                     dao.insertAppDetails(entity)
                 }
