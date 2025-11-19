@@ -37,7 +37,7 @@ class AppDetailsRepositoryImpl @Inject constructor(
      * @return Flow<AppDetails> доменная модель приложения
      * @throws NoSuchElementException если приложение с указанным id не найдено
      */
-    override suspend fun getById(id: String): Flow<AppDetails> {
+    override fun getById(id: String): Flow<AppDetails> {
         return dao.getAppDetails(id).map { entity ->
             if (entity != null) { // получаем entity из базы данных
                 appDetailsEntityMapper.toDomainModel(entity)
