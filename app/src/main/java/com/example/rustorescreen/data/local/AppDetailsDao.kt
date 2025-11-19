@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.rustorescreen.domain.domainModel.AppCategory
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -13,4 +14,7 @@ interface AppDetailsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAppDetails(appDetailsEntity: AppDetailsEntity)
+
+    @Query("UPDATE app_details SET category = :newCategory WHERE id = :id")
+    suspend fun updateAppCategory(id: String, newCategory: AppCategory)
 }
