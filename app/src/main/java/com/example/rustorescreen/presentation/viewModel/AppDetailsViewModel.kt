@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
+import com.example.rustorescreen.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -32,6 +33,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AppDetailsViewModel  @Inject constructor (
     private val getAppDetailsUseCase: GetAppDetailsUseCase,
+    private val logger: Logger,
     savedStateHandle: SavedStateHandle, // для получения сохраненного состояния(включая параметры навигации)
 ): ViewModel() {
     /**
@@ -117,7 +119,8 @@ class AppDetailsViewModel  @Inject constructor (
                     descriptionExpanded = false,
                 )
             }
-            .catch {
+            .catch { error ->
+                logger.e(message = "Failed to load app", throwable = error) // логируем ошибку в Logcat
                 _state.value = AppDetailsState.Error // экран ошибки
             }
             /* запуск корутины внутри viewModelScope для ассинхронного обновления интерфейса
