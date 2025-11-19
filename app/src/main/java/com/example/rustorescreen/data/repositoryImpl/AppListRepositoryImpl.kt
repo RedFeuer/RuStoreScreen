@@ -37,7 +37,7 @@ class AppListRepositoryImpl @Inject constructor(
      *
      * @return список `AppDetails` — доменные модели приложений.
      */
-    override suspend fun get() : Flow<List<AppDetails>> {
+    override fun get() : Flow<List<AppDetails>> {
         return dao.getAppList().map{ entities ->
             if (entities.isNotEmpty()) { /* получаем список приложений из базы данных, если таблица не пустая */
                 entities.map{ entity->

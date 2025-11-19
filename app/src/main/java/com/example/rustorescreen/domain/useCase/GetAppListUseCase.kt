@@ -35,7 +35,7 @@ class GetAppListUseCase(
      * @throws Exception пробрасывает исключения, возникающие в репозитории;
      *         при необходимости оборачивать здесь.
      */
-    suspend operator fun invoke(): Flow<List<AppDetails>> {
+    operator fun invoke(): Flow<List<AppDetails>> {
         val apps: Flow<List<AppDetails>> = appRepository.get()// Fetches the App data from the repository when called
 
         return apps

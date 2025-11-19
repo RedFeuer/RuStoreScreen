@@ -18,5 +18,5 @@ interface AppListRepository {
      *
      * @return список `AppDetails` — доменные модели приложений.
      */
-    suspend fun get(): Flow<List<AppDetails>>
+    fun get(): Flow<List<AppDetails>>
 }
