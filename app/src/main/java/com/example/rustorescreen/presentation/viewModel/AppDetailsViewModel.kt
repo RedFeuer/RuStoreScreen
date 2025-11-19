@@ -99,7 +99,7 @@ class AppDetailsViewModel  @Inject constructor (
     }
 
     /**
-     * Асинхронно подписывается на `getAppDetailsUseCase(appId)` и обновляет `_state`.
+     * Загрузка конкретного приложения
      *
      * Поведение:
      * - Устанавливает `AppDetailsState.Loading` синхронно при вызове метода.
