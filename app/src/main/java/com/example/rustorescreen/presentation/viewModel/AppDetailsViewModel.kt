@@ -8,13 +8,17 @@ import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -99,27 +103,29 @@ class AppDetailsViewModel  @Inject constructor (
     }
 
     /**
-     * Асинхронно загружает конкретное приложение и обновляет состояние:
-     * - устанавливает Loading перед запросом;
-     * - при успехе — AppDetailsState.Content с полученными данными;
-     * - при ошибке — AppDetailsState.Error.
+     * Асинхронно подписывается на `getAppDetailsUseCase(appId)` и обновляет `_state`.
+     *
+     * Поведение:
+     * - Устанавливает `AppDetailsState.Loading` синхронно при вызове метода.
+     * - Подписывается на возвращаемый `Flow<AppDetails>` и обрабатывает каждый эмит через `onEach`.
+     * - Для каждого полученного `AppDetails` устанавливает `AppDetailsState.Content(appDetails, descriptionExpanded = false)`.
+     * - Ошибки, возникшие в потоке до оператора `catch`, переводят состояние в `AppDetailsState.Error`.
+     * - Подписка запускается методом `launchIn(viewModelScope)` и живёт в рамках `viewModelScope` — будет отменена при уничтожении ViewModel.
      */
     fun getAppDetails() {
-        viewModelScope.launch {
-            _state.value = AppDetailsState.Loading // set loading state
-
-            /*like try-catch*/
-            runCatching {
-                val appDetailsFlow: Flow<AppDetails> = getAppDetailsUseCase(appId) // fetch app details using the use case
-                val appDetails: AppDetails = appDetailsFlow.first()
-
-                _state.value = AppDetailsState.Content(
+        _state.value = AppDetailsState.Loading // синхронно сразу выставляем состояние загрузки
+        getAppDetailsUseCase(appId)
+            .onEach { appDetails -> // реактивная подписка на состояние экрана конкретного приложения
+                _state.value = AppDetailsState.Content( // устанавливаем экран конкретного приложения
                     appDetails = appDetails,
-                    descriptionExpanded = false, // description collapsed in default
+                    descriptionExpanded = false,
                 )
-            }.onFailure {
-                _state.value = AppDetailsState.Error // set error state if failure occurs
             }
-        }
+            .catch {
+                _state.value = AppDetailsState.Error // экран ошибки
+            }
+            /* запуск корутины внутри viewModelScope для ассинхронного обновления интерфейса
+            * позволяет реактивно подписаться на состояние экрана конкретного приложения */
+            .launchIn(viewModelScope)
     }
 }
