@@ -5,7 +5,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rustorescreen.R
+import com.example.rustorescreen.domain.domainModel.AppCategory
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
+import com.example.rustorescreen.domain.useCase.UpdateAppCategoryUseCase
 import com.example.rustorescreen.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -33,6 +35,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AppDetailsViewModel  @Inject constructor (
     private val getAppDetailsUseCase: GetAppDetailsUseCase,
+    private val updateAppCategoryUseCase: UpdateAppCategoryUseCase,
     private val logger: Logger,
     savedStateHandle: SavedStateHandle, // для получения сохраненного состояния(включая параметры навигации)
 ): ViewModel() {
@@ -126,5 +129,26 @@ class AppDetailsViewModel  @Inject constructor (
             /* запуск корутины внутри viewModelScope для ассинхронного обновления интерфейса
             * позволяет реактивно подписаться на состояние экрана конкретного приложения */
             .launchIn(viewModelScope)
+    }
+
+    fun updateAppCategory(newCategory: AppCategory) {
+        viewModelScope.launch {
+            try {
+                updateAppCategoryUseCase(id = appId, newCategory = newCategory)
+
+                val current = (_state.value as? AppDetailsState.Content)?.appDetails
+                if (current != null) {
+                    val updated = current.copy(category = newCategory) // устанавливаем новую категорию
+                    _state.value = AppDetailsState.Content(
+                        appDetails = updated,
+                        descriptionExpanded = (_state.value as? AppDetailsState.Content)?.descriptionExpanded ?: false
+                    )
+                }
+            }
+            catch(e: Exception) {
+                logger.e(message = "Failed to update appCategory", throwable = e)
+                _state.value = AppDetailsState.Error
+            }
+        }
     }
 }
