@@ -81,33 +81,23 @@ class AppListViewModel @Inject constructor(
      * Загрузка списка приложений.
      *
      * Поведение:
-     * 1. Устанавливает состояние в `Loading`.
-     * 2. Вызывает [getAppListUseCase]. В нем с помощью репозитория получаем список приложений
-     * 3. При успешной загрузке устанавливает состояние `Content` с полученным списком.
-     * 4. При ошибке логирует проблему и устанавливает состояние `Error`.
+     * - Устанавливает состояние в `AppListState.Loading` синхронно при вызове.
+     * - Подписывается на возвращаемый `Flow<List<AppDetails>>` и обрабатывает каждый эмит.
+     * - Ошибки, возникшие в потоке, логируются через `logger.e` и переводят состояние в `AppListState.Error`.
+     * - Подписка запускается с помощью `launchIn(viewModelScope)` и живёт в рамках `viewModelScope` — будет отменена при уничтожении ViewModel.
      */
     fun getAppList() {
-        viewModelScope.launch {
-            _state.value = AppListState.Loading // set loading state
-
-            /*like try-catch*/
-            runCatching {
-                val appListFlow: Flow<List<AppDetails>> = getAppListUseCase()
-                appListFlow
-                    .onEach { emitted->
-                        val previous = (_state.value as? AppListState.Content)?.appList ?: emptyList()
-                        val merged = (previous + emitted).distinct() // убираем неуникальные
-                        _state.value = AppListState.Content(appList = merged)
-                    }
-                    .catch { error->
-                        logger.e(message = "Failed to collect app list", throwable = error)
-                        _state.value = AppListState.Error
-                    }
-                    .launchIn(this) // собираем в отдельной корутине, чтобы не блокировать текущую
-            }.onFailure { error ->
-                logger.e(message = "Failed to load app list", throwable = error) // логируем ошибку
-                _state.value = AppListState.Error // set error state if exception occurs
+        _state.value = AppListState.Loading // синхронно сразу выставляем состояние загрузки
+        getAppListUseCase()
+            .onEach { appList ->
+                _state.value = AppListState.Content(appList = appList) // устанавливаем экран списка приложений
             }
-        }
+            .catch { error ->
+                logger.e(message = "Failed to load app list", throwable = error) // логируем ошибку в Logcat
+                _state.value = AppListState.Error // экран ошибки
+            }
+            /* запуск корутины внутри viewModelScope для ассинхронного обновления интерфейса
+           * позволяет реактивно подписаться на состояние экрана конкретного приложения */
+            .launchIn(viewModelScope)
     }
 }
