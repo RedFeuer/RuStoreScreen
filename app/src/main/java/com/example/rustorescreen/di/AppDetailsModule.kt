@@ -7,6 +7,7 @@ import com.example.rustorescreen.data.mapper.AppDetailsMapper
 import com.example.rustorescreen.data.repositoryImpl.AppDetailsRepositoryImpl
 import com.example.rustorescreen.domain.repositoryInterface.AppDetailsRepository
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
+import com.example.rustorescreen.domain.useCase.UpdateAppCategoryUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -61,6 +62,12 @@ object AppDetailsModule {
     @Singleton
     fun provideGetAppDetailsUseCase(repository: AppDetailsRepository): GetAppDetailsUseCase {
         return GetAppDetailsUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateAppCategoryUseCase(repository: AppDetailsRepository): UpdateAppCategoryUseCase {
+        return UpdateAppCategoryUseCase(repository)
     }
 
     /**
