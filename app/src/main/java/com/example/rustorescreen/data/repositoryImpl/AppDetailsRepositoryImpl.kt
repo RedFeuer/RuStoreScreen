@@ -6,6 +6,7 @@ import com.example.rustorescreen.data.local.AppDetailsDao
 import com.example.rustorescreen.data.local.AppDetailsEntity
 import com.example.rustorescreen.data.local.AppDetailsEntityMapper
 import com.example.rustorescreen.data.mapper.AppDetailsMapper
+import com.example.rustorescreen.domain.domainModel.AppCategory
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.domain.repositoryInterface.AppDetailsRepository
 import kotlinx.coroutines.Dispatchers
@@ -62,5 +63,9 @@ class AppDetailsRepositoryImpl @Inject constructor(
                 domainModel // возвращаем доменную модель, полученную из API
             }
         }
+    }
+
+    override suspend fun setAppCategory(id: String, newCategory: AppCategory) {
+        dao.updateAppCategory(id = id, newCategory = newCategory)
     }
 }

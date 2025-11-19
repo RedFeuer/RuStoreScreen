@@ -1,5 +1,6 @@
 package com.example.rustorescreen.domain.repositoryInterface
 
+import com.example.rustorescreen.domain.domainModel.AppCategory
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import kotlinx.coroutines.flow.Flow
 
@@ -17,4 +18,6 @@ interface AppDetailsRepository {
      * @throws NoSuchElementException если приложение с указанным id не найдено
      */
     fun getById(id: String): Flow<AppDetails>
+
+    suspend fun setAppCategory(id: String, newCategory: AppCategory)
 }
