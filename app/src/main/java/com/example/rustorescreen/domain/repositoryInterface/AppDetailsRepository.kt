@@ -16,5 +16,5 @@ interface AppDetailsRepository {
      * @return Flow<AppDetails> доменная модель приложения
      * @throws NoSuchElementException если приложение с указанным id не найдено
      */
-    suspend fun getById(id: String): Flow<AppDetails>
+    fun getById(id: String): Flow<AppDetails>
 }

@@ -26,7 +26,7 @@ class GetAppDetailsUseCase(
      * @return [Flow<AppDetails>] с информацией о приложении
      * @throws NoSuchElementException если приложение с указанным id не найдено
      */
-    suspend operator fun invoke(id: String) : Flow<AppDetails> {
+    operator fun invoke(id: String) : Flow<AppDetails> {
         val appDetails: Flow<AppDetails> = appDetailsRepository.getById(id)
         return appDetails
     }
