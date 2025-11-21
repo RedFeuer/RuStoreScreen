@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">RuStoreScreen</string>
 
+    <string name="category">Категория</string>
     <string name="category_app">Приложения</string>
     <string name="category_game">Игры</string>
 
