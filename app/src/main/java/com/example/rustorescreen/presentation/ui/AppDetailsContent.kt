@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.rustorescreen.domain.domainModel.AppCategory
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.presentation.viewModel.AppDetailsState
 
@@ -42,6 +43,7 @@ fun AppDetailsContent(
     onInstallClick: () -> Unit,
     onDescriptionExpandClick: () -> Unit,
     onDeveloperInfoClick: () -> Unit,
+    onCategoryUpdateClick: (AppCategory) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val appDetails: AppDetails = content.appDetails
@@ -58,6 +60,7 @@ fun AppDetailsContent(
 
         AppDetailsHeader(
             appDetails = appDetails,
+            onCategoryUpdateClick = onCategoryUpdateClick,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
         Spacer(Modifier.height(4.dp))
