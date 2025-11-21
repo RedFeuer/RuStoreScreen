@@ -4,8 +4,9 @@ import com.example.rustorescreen.domain.repositoryInterface.DownloadingRepositor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class DownloadingRepositoryImpl() : DownloadingRepository {
+class DownloadingRepositoryImpl @Inject constructor() : DownloadingRepository {
     /* типо скачиваем .apk файл */
     override fun processApk(): Flow<Int> =
         flow {
