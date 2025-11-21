@@ -53,7 +53,7 @@ fun AppDetailsScreen(
     viewModel: AppDetailsViewModel,
     onBack: () -> Unit
 ) {
-    val state = viewModel.state.collectAsState() // подписка на состояние(дает реактивное обновление)
+    val state = viewModel.state.collectAsState() // реактивная подписка Compose-экрана на состояние StateFlow во ViewModel
 
     val events : Flow<AppDetailsEvent> = viewModel.events
     val snackbarHostState : SnackbarHostState = remember{ SnackbarHostState() }
