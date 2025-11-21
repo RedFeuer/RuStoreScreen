@@ -1,13 +1,20 @@
 package com.example.rustorescreen.di
 
+import com.example.rustorescreen.data.api.ApkUrlApi
 import com.example.rustorescreen.data.api.AppListAPI
 import com.example.rustorescreen.data.local.AppDetailsDao
 import com.example.rustorescreen.data.local.AppDetailsEntityMapper
 import com.example.rustorescreen.data.mapper.AppDetailsMapper
 import com.example.rustorescreen.data.repositoryImpl.AppDetailsRepositoryImpl
+import com.example.rustorescreen.data.repositoryImpl.DownloadingRepositoryImpl
+import com.example.rustorescreen.data.repositoryImpl.InstallAppRepositoryImpl
 import com.example.rustorescreen.domain.repositoryInterface.AppDetailsRepository
+import com.example.rustorescreen.domain.repositoryInterface.DownloadingRepository
+import com.example.rustorescreen.domain.repositoryInterface.InstallAppRepository
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
+import com.example.rustorescreen.domain.useCase.InstallAppUseCase
 import com.example.rustorescreen.domain.useCase.UpdateAppCategoryUseCase
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,103 +47,138 @@ import javax.inject.Singleton
  */
 @Module
 @InstallIn(SingletonComponent::class)
-object AppDetailsModule {
-
-    @Provides
+abstract class AppDetailsModule {
+    @Binds
     @Singleton
-    fun provideAppDetailsRepository(
-        api: AppListAPI,
-        dao: AppDetailsDao,
-        mapper: AppDetailsMapper,
-        entityMapper: AppDetailsEntityMapper,
-    ): AppDetailsRepository {
-        return AppDetailsRepositoryImpl(
-            appListApi = api,
-            dao = dao,
-            appDetailsMapper = mapper,
-            appDetailsEntityMapper = entityMapper,
-        )
-    }
+    abstract fun bindDownloadingRepository(impl: DownloadingRepositoryImpl): DownloadingRepository
 
-    @Provides
-    @Singleton
-    fun provideGetAppDetailsUseCase(repository: AppDetailsRepository): GetAppDetailsUseCase {
-        return GetAppDetailsUseCase(repository)
-    }
+    companion object {
+        @Provides
+        @Singleton
+        fun provideAppDetailsRepository(
+            api: AppListAPI,
+            dao: AppDetailsDao,
+            mapper: AppDetailsMapper,
+            entityMapper: AppDetailsEntityMapper,
+        ): AppDetailsRepository {
+            return AppDetailsRepositoryImpl(
+                appListApi = api,
+                dao = dao,
+                appDetailsMapper = mapper,
+                appDetailsEntityMapper = entityMapper,
+            )
+        }
 
-    @Provides
-    @Singleton
-    fun provideUpdateAppCategoryUseCase(repository: AppDetailsRepository): UpdateAppCategoryUseCase {
-        return UpdateAppCategoryUseCase(repository)
-    }
+        @Provides
+        @Singleton
+        fun provideInstallAppRepository(
+            api: ApkUrlApi,
+            repository: DownloadingRepository
+        ): InstallAppRepository {
+            return InstallAppRepositoryImpl(
+                apkUrlApi = api,
+                downloadingRepository = repository,
+            )
+        }
 
-    /**
-     * Предоставляет маппер для преобразования моделей данных [AppDetailsDto]
-     * в доменные объекты [AppDetails] и обратно.
-     */
-    @Provides
-    @Singleton
-    fun provideAppDetailsMapper(): AppDetailsMapper {
-        return AppDetailsMapper()
-    }
+        @Provides
+        @Singleton
+        fun provideApkUrlApi(): ApkUrlApi {
+            return ApkUrlApi()
+        }
 
-    /**
-     * Предоставляет интерцептор для логирования HTTP-запросов/ответов.
-     *
-     * Уровень логирования установлен в BODY для подробного вывода
-     * Вообще в проде в релизных сборках это надо убирать!!!!!
-     */
-    @Provides
-    @Singleton
-    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.level = HttpLoggingInterceptor.Level.BODY
-        return interceptor
-    }
+//        @Provides
+//        @Singleton
+//        fun provideDownloadingRepository(): DownloadingRepository {
+//            return DownloadingRepositoryImpl()
+//        }
 
-    /**
-     * Создаёт и конфигурирует [OkHttpClient] с интерцептором логирования и таймаутами.
-     *
-     * @param logging интерцептор для логирования HTTP-трафика
-     * @return настроенный экземпляр [OkHttpClient]
-     */
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(logging: HttpLoggingInterceptor): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .connectTimeout(5, TimeUnit.SECONDS)
-            .readTimeout(5, TimeUnit.SECONDS)
-            .build()
-    }
+        @Provides
+        @Singleton
+        fun provideGetAppDetailsUseCase(repository: AppDetailsRepository): GetAppDetailsUseCase {
+            return GetAppDetailsUseCase(repository)
+        }
 
-    /**
-     * Строит экземпляр [Retrofit] для общения с сервером приложений.
-     *
-     * Использует базовый URL `http://185.103.109.134` и
-     * сериализацию kotlinx.serialization(asConverterFactory).
-     *
-     * @param client настроенный HTTP-клиент
-     * @return экземпляр [Retrofit] для [AppListAPI]
-     */
-    @Provides
-    @Singleton
-    fun provideRetrofitAppDetailsAPI(client: OkHttpClient): Retrofit {
-        val contentType = "application/json".toMediaType()
-        val json = Json { ignoreUnknownKeys = true }
-        return Retrofit.Builder()
-            .client(client) // перехватчик HTTP-запросов
-            .baseUrl("http://185.103.109.134") // Базовый URL для API
-            .addConverterFactory(json.asConverterFactory(contentType))
-            .build()
-    }
+        @Provides
+        @Singleton
+        fun provideUpdateAppCategoryUseCase(repository: AppDetailsRepository): UpdateAppCategoryUseCase {
+            return UpdateAppCategoryUseCase(repository)
+        }
 
-    /**
-     * Создаёт реализацию интерфейса [AppListAPI] на основе [Retrofit].
-     */
-    @Provides
-    @Singleton
-    fun provideAppListApi(retrofit: Retrofit): AppListAPI {
-        return retrofit.create(AppListAPI::class.java)
+        @Provides
+        @Singleton
+        fun provideInstallAppUseCase(repository: InstallAppRepository): InstallAppUseCase {
+            return InstallAppUseCase(repository)
+        }
+
+        /**
+         * Предоставляет маппер для преобразования моделей данных [AppDetailsDto]
+         * в доменные объекты [AppDetails] и обратно.
+         */
+        @Provides
+        @Singleton
+        fun provideAppDetailsMapper(): AppDetailsMapper {
+            return AppDetailsMapper()
+        }
+
+        /**
+         * Предоставляет интерцептор для логирования HTTP-запросов/ответов.
+         *
+         * Уровень логирования установлен в BODY для подробного вывода
+         * Вообще в проде в релизных сборках это надо убирать!!!!!
+         */
+        @Provides
+        @Singleton
+        fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.level = HttpLoggingInterceptor.Level.BODY
+            return interceptor
+        }
+
+        /**
+         * Создаёт и конфигурирует [OkHttpClient] с интерцептором логирования и таймаутами.
+         *
+         * @param logging интерцептор для логирования HTTP-трафика
+         * @return настроенный экземпляр [OkHttpClient]
+         */
+        @Provides
+        @Singleton
+        fun provideOkHttpClient(logging: HttpLoggingInterceptor): OkHttpClient {
+            return OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .readTimeout(5, TimeUnit.SECONDS)
+                .build()
+        }
+
+        /**
+         * Строит экземпляр [Retrofit] для общения с сервером приложений.
+         *
+         * Использует базовый URL `http://185.103.109.134` и
+         * сериализацию kotlinx.serialization(asConverterFactory).
+         *
+         * @param client настроенный HTTP-клиент
+         * @return экземпляр [Retrofit] для [AppListAPI]
+         */
+        @Provides
+        @Singleton
+        fun provideRetrofitAppDetailsAPI(client: OkHttpClient): Retrofit {
+            val contentType = "application/json".toMediaType()
+            val json = Json { ignoreUnknownKeys = true }
+            return Retrofit.Builder()
+                .client(client) // перехватчик HTTP-запросов
+                .baseUrl("http://185.103.109.134") // Базовый URL для API
+                .addConverterFactory(json.asConverterFactory(contentType))
+                .build()
+        }
+
+        /**
+         * Создаёт реализацию интерфейса [AppListAPI] на основе [Retrofit].
+         */
+        @Provides
+        @Singleton
+        fun provideAppListApi(retrofit: Retrofit): AppListAPI {
+            return retrofit.create(AppListAPI::class.java)
+        }
     }
 }
