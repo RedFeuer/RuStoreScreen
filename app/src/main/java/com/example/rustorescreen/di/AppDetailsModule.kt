@@ -52,46 +52,20 @@ abstract class AppDetailsModule {
     @Singleton
     abstract fun bindDownloadingRepository(impl: DownloadingRepositoryImpl): DownloadingRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindsAppDetailsRepository(impl: AppDetailsRepositoryImpl): AppDetailsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindsInstallAppRepository(impl: InstallAppRepositoryImpl): InstallAppRepository
+
     companion object {
-        @Provides
-        @Singleton
-        fun provideAppDetailsRepository(
-            api: AppListAPI,
-            dao: AppDetailsDao,
-            mapper: AppDetailsMapper,
-            entityMapper: AppDetailsEntityMapper,
-        ): AppDetailsRepository {
-            return AppDetailsRepositoryImpl(
-                appListApi = api,
-                dao = dao,
-                appDetailsMapper = mapper,
-                appDetailsEntityMapper = entityMapper,
-            )
-        }
-
-        @Provides
-        @Singleton
-        fun provideInstallAppRepository(
-            api: ApkUrlApi,
-            repository: DownloadingRepository
-        ): InstallAppRepository {
-            return InstallAppRepositoryImpl(
-                apkUrlApi = api,
-                downloadingRepository = repository,
-            )
-        }
-
         @Provides
         @Singleton
         fun provideApkUrlApi(): ApkUrlApi {
             return ApkUrlApi()
         }
-
-//        @Provides
-//        @Singleton
-//        fun provideDownloadingRepository(): DownloadingRepository {
-//            return DownloadingRepositoryImpl()
-//        }
 
         @Provides
         @Singleton
