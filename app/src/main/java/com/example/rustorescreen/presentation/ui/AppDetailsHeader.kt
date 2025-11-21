@@ -9,9 +9,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +44,7 @@ import com.example.rustorescreen.domain.domainModel.AppDetails
 @Composable
 fun AppDetailsHeader(
     appDetails: AppDetails,
+    onCategoryUpdateClick: (AppCategory) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -52,11 +61,16 @@ fun AppDetailsHeader(
         )
         Spacer(Modifier.width(16.dp))
         Column {
-            Text(
-                text = getCategoryText(appDetails.category),
-                color = MaterialTheme.colorScheme.secondary,
-                fontSize = 12.sp,
+            AppCategoryDropdown(
+                selectedAppCategory = appDetails.category,
+                onSelectedAppCategoryClick = onCategoryUpdateClick,
             )
+
+//            Text(
+//                text = getCategoryText(appDetails.category),
+//                color = MaterialTheme.colorScheme.secondary,
+//                fontSize = 12.sp,
+//            )
             Spacer(Modifier.height(4.dp))
             Text(
                 text = appDetails.developer,
@@ -83,6 +97,69 @@ fun AppDetailsHeader(
         }
     }
 }
+
+/**
+ * Выпадающий список для выбора категории приложения.
+ *
+ * Компонент отображает текущее значение в `OutlinedTextField` (только для чтения)
+ * и привязанный к нему выпадающий список категорий из `AppCategory.entries`.
+ * Состояние открытия меню хранится через `remember`. При выборе категории
+ * вызывается `onSelectedAppCategoryClick` и меню закрывается.
+ *
+ * @param selectedAppCategory текущая выбранная категория, используемая для отображения текста.
+ * @param onSelectedAppCategoryClick лямбда (AppCategory) -> Unit, вызываемая при выборе новой категории.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AppCategoryDropdown(
+    selectedAppCategory: AppCategory,
+    onSelectedAppCategoryClick: (AppCategory) -> Unit,
+) {
+    var expanded by remember {mutableStateOf(false)} // храним состояние
+    val categories = AppCategory.entries
+
+    ExposedDropdownMenuBox(
+        expanded = expanded, // состояние выпадения/закрывания
+        onExpandedChange = {expanded = !expanded}, // действие для сворачивания
+    ) {
+        /* текущая выбранная категория, от которой будет отрисовываться список */
+        OutlinedTextField(
+            value = getCategoryText(selectedAppCategory),
+            onValueChange = {},
+            readOnly = true,
+            label = {Text(stringResource(R.string.category))},
+            modifier = Modifier
+                /* "якорь" для меню
+                * говорит приложению, что этот OutlinedTextField является элементов,
+                * к которому пристыковывается выпадающий список ExposedDropdownMenu */
+                .menuAnchor(
+                    type = MenuAnchorType.PrimaryNotEditable, // основной якорь, поля не редактируемы
+                    enabled = true // включаем выпадение списка
+                )
+                .fillMaxWidth()
+        )
+
+        /* список категорий */
+        ExposedDropdownMenu(
+            expanded = expanded, // состояние выпадения/закрывания
+            onDismissRequest = { expanded = false }, // при нажатии вне выпавшего списка - он закрается
+        ) {
+            /* выводим все категории */
+            categories.forEach { category ->
+                DropdownMenuItem(
+                    text = { Text(getCategoryText(category)) },
+                    onClick = { // действия при клике на конкретную категорию
+                        expanded = false // при выборе категории - сворачиваем список
+                        /* вызов лямбды (AppCategory) -> Unit
+                        * это вызов функции updateAppCategory(newCategory: AppCategory) из ViewModel*/
+                        onSelectedAppCategoryClick(category)
+                    },
+                )
+            }
+        }
+    }
+}
+
 
 /**
  * Возвращает локализованную строку категории по значению [AppCategory].
