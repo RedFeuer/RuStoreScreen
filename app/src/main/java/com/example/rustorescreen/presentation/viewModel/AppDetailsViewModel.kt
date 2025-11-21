@@ -138,9 +138,9 @@ class AppDetailsViewModel  @Inject constructor (
 
                 val current = (_state.value as? AppDetailsState.Content)?.appDetails
                 if (current != null) {
-                    val updated = current.copy(category = newCategory) // устанавливаем новую категорию
+                    val updated = current.copy(category = newCategory)
                     _state.value = AppDetailsState.Content(
-                        appDetails = updated,
+                        appDetails = updated, // сразу устанавливаем новую категорию
                         descriptionExpanded = (_state.value as? AppDetailsState.Content)?.descriptionExpanded ?: false
                     )
                 }
