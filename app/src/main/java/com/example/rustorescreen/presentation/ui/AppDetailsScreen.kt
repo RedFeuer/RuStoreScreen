@@ -153,6 +153,11 @@ fun AppDetailsScreen(
                         // TODO: Реализовать переход к информации о разработчике
                         viewModel.showWorkInProgressMessage()
                     },
+                    /* отложенная передача параметра AppCategory через лямбду
+                    * передаем лямбду (AppCategory) -> Unit */
+                    onCategoryUpdateClick = { newCategory ->
+                        viewModel.updateAppCategory(newCategory)
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                         .safeDrawingPadding()
