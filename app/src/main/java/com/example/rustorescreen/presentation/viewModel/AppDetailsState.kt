@@ -30,6 +30,7 @@ sealed interface AppDetailsState {
     data class Content(
         val appDetails: AppDetails,
         val descriptionExpanded: Boolean = false,
+        val installStatus: InstallStatus = InstallStatus.Idle // по умолчанию - не установлено
     ) : AppDetailsState
 
 }

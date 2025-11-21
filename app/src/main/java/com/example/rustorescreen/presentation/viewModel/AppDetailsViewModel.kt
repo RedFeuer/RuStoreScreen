@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.domainModel.AppCategory
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
+import com.example.rustorescreen.domain.useCase.InstallAppUseCase
 import com.example.rustorescreen.domain.useCase.UpdateAppCategoryUseCase
 import com.example.rustorescreen.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,6 +37,7 @@ import javax.inject.Inject
 class AppDetailsViewModel  @Inject constructor (
     private val getAppDetailsUseCase: GetAppDetailsUseCase,
     private val updateAppCategoryUseCase: UpdateAppCategoryUseCase,
+    private val installAppUseCase: InstallAppUseCase,
     private val logger: Logger,
     savedStateHandle: SavedStateHandle, // для получения сохраненного состояния(включая параметры навигации)
 ): ViewModel() {
@@ -150,5 +152,29 @@ class AppDetailsViewModel  @Inject constructor (
                 _state.value = AppDetailsState.Error
             }
         }
+    }
+
+    /* TODO: 1) разобраться с этой функцией
+    *        2) добавить все DI для реализации
+    *        3) сделать через combine */
+    fun installApp() {
+        installAppUseCase()
+            .onEach { installStatus ->
+                _state.update { currentState ->
+                    if (currentState is AppDetailsState.Content) {
+                        currentState.copy(
+                            installStatus = installStatus
+                        )
+                    }
+                    else {
+                        currentState
+                    }
+                }
+            }
+            .catch { error ->
+                logger.e(message = "Error downloading app:", throwable = error)
+
+            }
+            .launchIn(viewModelScope)
     }
 }

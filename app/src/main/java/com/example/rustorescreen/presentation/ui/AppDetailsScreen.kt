@@ -142,8 +142,7 @@ fun AppDetailsScreen(
                         viewModel.showWorkInProgressMessage()
                     },
                     onInstallClick = {
-                        // TODO: Реализовать функционал установки приложения
-                        viewModel.showWorkInProgressMessage()
+                        viewModel.installApp()
                     },
                     onDescriptionExpandClick = {
                         // TODO: Реализовать разворачивание/сворачивание описания
