@@ -1,6 +1,7 @@
 package com.example.rustorescreen.presentation.viewModel
 
 import com.example.rustorescreen.domain.domainModel.AppDetails
+import com.example.rustorescreen.domain.domainModel.InstallStatus
 
 /**
  * Класс состояния экрана приложения.

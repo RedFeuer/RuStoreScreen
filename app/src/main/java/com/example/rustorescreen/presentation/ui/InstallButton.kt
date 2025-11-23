@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.rustorescreen.R
 import com.example.rustorescreen.presentation.viewModel.AppDetailsState
-import com.example.rustorescreen.presentation.viewModel.InstallStatus
+import com.example.rustorescreen.domain.domainModel.InstallStatus
 
 /**
  * Компонент кнопки установки приложения.

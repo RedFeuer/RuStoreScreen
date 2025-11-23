@@ -1,4 +1,4 @@
-package com.example.rustorescreen.presentation.viewModel
+package com.example.rustorescreen.domain.domainModel
 
 sealed interface InstallStatus {
     data object Idle: InstallStatus // = Uninstalled = состояние по умолчанию

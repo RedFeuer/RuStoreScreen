@@ -3,7 +3,7 @@ package com.example.rustorescreen.data.repositoryImpl
 import com.example.rustorescreen.data.api.ApkUrlApi
 import com.example.rustorescreen.domain.repositoryInterface.DownloadingRepository
 import com.example.rustorescreen.domain.repositoryInterface.InstallAppRepository
-import com.example.rustorescreen.presentation.viewModel.InstallStatus
+import com.example.rustorescreen.domain.domainModel.InstallStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll

@@ -1,6 +1,6 @@
 package com.example.rustorescreen.domain.repositoryInterface
 
-import com.example.rustorescreen.presentation.viewModel.InstallStatus
+import com.example.rustorescreen.domain.domainModel.InstallStatus
 import kotlinx.coroutines.flow.Flow
 
 interface InstallAppRepository {
