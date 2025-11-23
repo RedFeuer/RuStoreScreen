@@ -11,6 +11,7 @@ import com.example.rustorescreen.domain.useCase.InstallAppUseCase
 import com.example.rustorescreen.domain.useCase.UpdateAppCategoryUseCase
 import com.example.rustorescreen.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +48,8 @@ class AppDetailsViewModel  @Inject constructor (
      */
     private val appId: String = checkNotNull(savedStateHandle.get<String>("appId"))
 
+
+    private var installApkJob: Job? = null // ссылка на Корутину, в которой запускается установка приложения
 
     /**
      * Внутренний StateFlow, содержащий текущее состояние экрана.
@@ -157,7 +160,8 @@ class AppDetailsViewModel  @Inject constructor (
     /* TODO: 1) сделать через combine
     *   2) сделать сохранение состояния загрузки приложения в БД*/
     fun installApp() {
-        installAppUseCase()
+        installApkJob?.cancel() // если была запущена работа какой-то корутины - убиваем
+        installApkJob = installAppUseCase()
             .onEach { installStatus ->
                 _state.update { currentState ->
                     if (currentState is AppDetailsState.Content) {
