@@ -154,9 +154,8 @@ class AppDetailsViewModel  @Inject constructor (
         }
     }
 
-    /* TODO: 1) разобраться с этой функцией
-    *        2) добавить все DI для реализации
-    *        3) сделать через combine */
+    /* TODO: 1) сделать через combine
+    *   2) сделать сохранение состояния загрузки приложения в БД*/
     fun installApp() {
         installAppUseCase()
             .onEach { installStatus ->
