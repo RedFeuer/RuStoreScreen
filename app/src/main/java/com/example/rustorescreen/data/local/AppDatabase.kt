@@ -6,9 +6,10 @@ import androidx.room.TypeConverters
 
 @Database(
     entities = [AppDetailsEntity::class],
-    version = 2,
+    version = 3,
 )
-@TypeConverters(CategoryConverter::class, ScreenshotsListConverter::class)
+@TypeConverters(InstallStatusConverter::class,
+    CategoryConverter::class, ScreenshotsListConverter::class)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun appDetailsDao(): AppDetailsDao
 
