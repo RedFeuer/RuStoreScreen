@@ -8,6 +8,7 @@ import com.example.rustorescreen.data.local.AppDetailsEntityMapper
 import com.example.rustorescreen.data.mapper.AppDetailsMapper
 import com.example.rustorescreen.domain.domainModel.AppCategory
 import com.example.rustorescreen.domain.domainModel.AppDetails
+import com.example.rustorescreen.domain.domainModel.InstallStatus
 import com.example.rustorescreen.domain.repositoryInterface.AppDetailsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -67,5 +68,9 @@ class AppDetailsRepositoryImpl @Inject constructor(
 
     override suspend fun setAppCategory(id: String, newCategory: AppCategory) {
         dao.updateAppCategory(id = id, newCategory = newCategory)
+    }
+
+    override suspend fun setInstallStatus(id: String, newInstallStatus: InstallStatus) {
+        dao.updateInstallStatus(id = id, newInstallStatus = newInstallStatus)
     }
 }
