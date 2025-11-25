@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.domainModel.AppCategory
+import com.example.rustorescreen.domain.domainModel.AppDetails
+import com.example.rustorescreen.domain.domainModel.InstallStatus
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
 import com.example.rustorescreen.domain.useCase.InstallAppUseCase
 import com.example.rustorescreen.domain.useCase.UpdateAppCategoryUseCase
@@ -18,8 +20,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -47,6 +53,8 @@ class AppDetailsViewModel  @Inject constructor (
      * @throws IllegalStateException если `appId` отсутствует
      */
     private val appId: String = checkNotNull(savedStateHandle.get<String>("appId"))
+
+    private val installTrigger = MutableStateFlow<String?>(null) // поток наблюдения за установкой приложения
 
 
     private var installApkJob: Job? = null // ссылка на Корутину, в которой запускается установка приложения
@@ -108,31 +116,42 @@ class AppDetailsViewModel  @Inject constructor (
         }
     }
 
-    /**
-     * Загрузка конкретного приложения
-     *
-     * Поведение:
-     * - Устанавливает `AppDetailsState.Loading` синхронно при вызове метода.
-     * - Подписывается на возвращаемый `Flow<AppDetails>` и обрабатывает каждый эмит через `onEach`.
-     * - Для каждого полученного `AppDetails` устанавливает `AppDetailsState.Content(appDetails, descriptionExpanded = false)`.
-     * - Ошибки, возникшие в потоке до оператора `catch`, переводят состояние в `AppDetailsState.Error`.
-     * - Подписка запускается методом `launchIn(viewModelScope)` и живёт в рамках `viewModelScope` — будет отменена при уничтожении ViewModel.
-     */
+    /* TODO:
+    *   1) сделать сохранение состояния загрузки приложения в БД
+    *   2) для ошибки загрузки: вместо состояния ошибки экрана сделать сброс до InstallStatus.Idle
+    *     и snack об ошибке загрузки*/
+    fun installApp() {
+        installTrigger.value = appId
+    }
+
     fun getAppDetails() {
-        _state.value = AppDetailsState.Loading // синхронно сразу выставляем состояние загрузки
-        getAppDetailsUseCase(appId)
-            .onEach { appDetails ->
-                _state.value = AppDetailsState.Content( // устанавливаем экран конкретного приложения
-                    appDetails = appDetails,
-                    descriptionExpanded = false,
+        combine(
+            flow = getAppDetailsUseCase(appId),
+            flow2 = installTrigger
+                .flatMapLatest { triggerAppId ->
+                    if (triggerAppId != null) {
+                        installAppUseCase(appId)
+                    }
+                    else {
+                        flowOf(InstallStatus.Idle)
+                    }
+                }
+        ) { appDetails, installStatus ->
+            appDetails.copy(installStatus = installStatus)
+//            if (installStatus !is InstallStatus.Idle) {
+//                appDetails.copy(installStatus = installStatus)
+//            }
+        }
+            .onEach { mergedAppDetails ->
+                _state.value = AppDetailsState.Content(
+                    appDetails = mergedAppDetails,
+                    descriptionExpanded = (_state.value as? AppDetailsState.Content)?.descriptionExpanded ?: false
                 )
             }
             .catch { error ->
-                logger.e(message = "Failed to load app", throwable = error) // логируем ошибку в Logcat
-                _state.value = AppDetailsState.Error // экран ошибки
+                logger.e(message = "Failed to load app", error)
+                _state.value = AppDetailsState.Error
             }
-            /* запуск корутины внутри viewModelScope для ассинхронного обновления интерфейса
-            * позволяет реактивно подписаться на состояние экрана конкретного приложения */
             .launchIn(viewModelScope)
     }
 
@@ -155,29 +174,5 @@ class AppDetailsViewModel  @Inject constructor (
                 _state.value = AppDetailsState.Error
             }
         }
-    }
-
-    /* TODO: 1) сделать через combine
-    *   2) сделать сохранение состояния загрузки приложения в БД*/
-    fun installApp() {
-        installApkJob?.cancel() // если была запущена работа какой-то корутины - убиваем
-        installApkJob = installAppUseCase()
-            .onEach { installStatus ->
-                _state.update { currentState ->
-                    if (currentState is AppDetailsState.Content) {
-                        currentState.copy(
-                            installStatus = installStatus
-                        )
-                    }
-                    else {
-                        currentState
-                    }
-                }
-            }
-            .catch { error ->
-                logger.e(message = "Error downloading app:", throwable = error)
-
-            }
-            .launchIn(viewModelScope)
     }
 }
