@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.rustorescreen.domain.domainModel.AppCategory
+import com.example.rustorescreen.domain.domainModel.InstallStatus
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -17,4 +18,7 @@ interface AppDetailsDao {
 
     @Query("UPDATE app_details SET category = :newCategory WHERE id = :id")
     suspend fun updateAppCategory(id: String, newCategory: AppCategory)
+
+    @Query("UPDATE app_details SET installStatus = :newInstallStatus WHERE id = :id")
+    suspend fun updateInstallStatus(id: String, newInstallStatus: InstallStatus)
 }
