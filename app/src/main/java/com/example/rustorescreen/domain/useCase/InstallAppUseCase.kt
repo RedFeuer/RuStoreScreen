@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class InstallAppUseCase(
     private val installAppRepository: InstallAppRepository,
 ) {
-    operator fun invoke(): Flow<InstallStatus> {
-        return installAppRepository.installApk()
+    operator fun invoke(id: String): Flow<InstallStatus> {
+        return installAppRepository.installApk(id = id)
     }
 }
