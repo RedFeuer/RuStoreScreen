@@ -4,5 +4,5 @@ import com.example.rustorescreen.domain.domainModel.InstallStatus
 import kotlinx.coroutines.flow.Flow
 
 interface InstallAppRepository {
-    fun installApk(): Flow<InstallStatus>
+    fun installApk(id: String): Flow<InstallStatus>
 }
