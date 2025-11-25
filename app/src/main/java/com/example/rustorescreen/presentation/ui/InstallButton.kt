@@ -35,7 +35,7 @@ fun InstallButton(
         contentPadding = PaddingValues(vertical = 8.dp),
         modifier = modifier,
     ) {
-        when (val currentInstallStatus = content.installStatus) {
+        when (val currentInstallStatus = content.appDetails.installStatus) {
             is InstallStatus.Idle -> {
                 Text(text = stringResource(R.string.install))
             }
