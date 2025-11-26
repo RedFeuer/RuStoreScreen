@@ -6,6 +6,7 @@ class AppDetailsEntityMapper {
     fun toDomainModel(entity: AppDetailsEntity): AppDetails = AppDetails (
         id = entity.id,
         name = entity.title,
+        installStatus = entity.installStatus,
         developer = entity.developer,
         category = entity.category,
         ageRating = entity.ageRating,
@@ -18,6 +19,7 @@ class AppDetailsEntityMapper {
     fun toEntity(domainModel: AppDetails): AppDetailsEntity = AppDetailsEntity (
         id = domainModel.id,
         title = domainModel.name,
+        installStatus = domainModel.installStatus,
         developer = domainModel.developer,
         category = domainModel.category,
         ageRating = domainModel.ageRating,

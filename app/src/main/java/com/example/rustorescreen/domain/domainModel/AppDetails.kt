@@ -16,7 +16,7 @@ package com.example.rustorescreen.domain.domainModel
 data class AppDetails(
     val id: String,
     val name: String,
-    val installStatus: InstallStatus = InstallStatus.Idle, // по умолчанию - не установлено
+    val installStatus: InstallStatus, // по умолчанию - не установлено
     val developer: String,
     val category: AppCategory,
     val ageRating: Int,

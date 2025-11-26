@@ -10,7 +10,7 @@ data class AppDetailsEntity (
     @PrimaryKey
     val id: String,
     val title: String,
-    val installStatus: InstallStatus = InstallStatus.Idle, // по умолчанию - не установлено
+    val installStatus: InstallStatus, // по умолчанию - не установлено
     val developer: String,
     val category: AppCategory,
     val ageRating: Int,

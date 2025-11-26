@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.domainModel.AppCategory
-import com.example.rustorescreen.domain.domainModel.AppDetails
-import com.example.rustorescreen.domain.domainModel.InstallStatus
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
 import com.example.rustorescreen.domain.useCase.InstallAppUseCase
 import com.example.rustorescreen.domain.useCase.UpdateAppCategoryUseCase
@@ -25,7 +23,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -124,25 +121,30 @@ class AppDetailsViewModel  @Inject constructor (
         installTrigger.value = appId
     }
 
+    /* TODO: понять почему у потока установки нельзя запустить кучу корутин посредством нажатий, чем
+    *   отличается от обычной реализации и как работает эта защита */
     fun getAppDetails() {
         combine(
-            flow = getAppDetailsUseCase(appId),
+            flow = getAppDetailsUseCase(appId), // эмитит каждое (отличное от текущего, тк stateflow) изменение в БД
             flow2 = installTrigger
                 .flatMapLatest { triggerAppId ->
                     if (triggerAppId != null) {
                         installAppUseCase(appId)
                     }
                     else {
-                        flowOf(InstallStatus.Idle)
+                        flowOf(null)
                     }
                 }
-        ) { appDetails, installStatus ->
-            appDetails.copy(installStatus = installStatus)
-//            if (installStatus !is InstallStatus.Idle) {
-//                appDetails.copy(installStatus = installStatus)
-//            }
+        ) { appDetails, installStatus -> // последние полученные значение из двух потоков
+            /* лямбда-трансформатор: показывает как получить mergedAppDetails из значений из двух потоков*/
+            if (installStatus != null) { // при нажатии кнопки установки для конкретного приложения меняем состояние на новое
+                appDetails.copy(installStatus = installStatus)
+            }
+            else { // если кнопку установки не нажимали, то предыдущее оставляем состояние(из БД)
+                appDetails
+            }
         }
-            .onEach { mergedAppDetails ->
+            .onEach { mergedAppDetails -> // результат лямбды-трансформатора для каждого emit
                 _state.value = AppDetailsState.Content(
                     appDetails = mergedAppDetails,
                     descriptionExpanded = (_state.value as? AppDetailsState.Content)?.descriptionExpanded ?: false
