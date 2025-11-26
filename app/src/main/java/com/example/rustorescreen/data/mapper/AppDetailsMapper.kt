@@ -19,6 +19,7 @@ class AppDetailsMapper {
     fun toDomainModel(dto: AppDetailsDto): AppDetails = AppDetails (
         id = dto.id,
         name = dto.title,
+        installStatus = dto.installStatus,
         developer = dto.developer,
         category = dto.category,
         ageRating = dto.ageRating,

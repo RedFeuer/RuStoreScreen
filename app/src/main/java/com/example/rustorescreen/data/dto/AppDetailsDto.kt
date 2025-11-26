@@ -1,6 +1,7 @@
 package com.example.rustorescreen.data.dto
 
 import com.example.rustorescreen.domain.domainModel.AppCategory
+import com.example.rustorescreen.domain.domainModel.InstallStatus
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -26,6 +27,7 @@ data class AppDetailsDto(
 
     @SerialName("name")
     val title: String = "",
+    val installStatus: InstallStatus,
 
     val developer: String = "",
     val category: AppCategory = AppCategory.APP,
