@@ -134,7 +134,6 @@ fun AppDetailsScreen(
                 AppDetailsContent(
                     content = currentState,
                     onBackClick = {
-                        // TODO: Открыть предыдущий экран через Jetpack Navigation
                         onBack()
                     },
                     onShareClick = {
@@ -145,7 +144,6 @@ fun AppDetailsScreen(
                         viewModel.installApp()
                     },
                     onDescriptionExpandClick = {
-                        // TODO: Реализовать разворачивание/сворачивание описания
                         viewModel.expandDescription()
                     },
                     onDeveloperInfoClick = {

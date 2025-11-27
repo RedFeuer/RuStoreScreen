@@ -114,15 +114,13 @@ class AppDetailsViewModel  @Inject constructor (
     }
 
     /* TODO:
-    *   1) сделать сохранение состояния загрузки приложения в БД
-    *   2) для ошибки загрузки: вместо состояния ошибки экрана сделать сброс до InstallStatus.Idle
+    *    для ошибки загрузки: вместо состояния ошибки экрана сделать сброс до InstallStatus.Idle
     *     и snack об ошибке загрузки*/
     fun installApp() {
         installTrigger.value = appId
     }
 
-    /* TODO: понять почему у потока установки нельзя запустить кучу корутин посредством нажатий, чем
-    *   отличается от обычной реализации и как работает эта защита */
+
     fun getAppDetails() {
         combine(
             flow = getAppDetailsUseCase(appId), // эмитит каждое (отличное от текущего, тк stateflow) изменение в БД

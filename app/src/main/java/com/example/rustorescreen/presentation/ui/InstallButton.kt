@@ -22,7 +22,6 @@ import com.example.rustorescreen.domain.domainModel.InstallStatus
  * @param onClick действие, выполняемое при нажатии на кнопку(установка - WIP).
  * @param modifier модификатор для настройки внешнего вида и расположения кнопки.
  */
-/* TODO: добавить отображение информации о загрузки на кнопке */
 @Composable
 fun InstallButton(
     content: AppDetailsState.Content,

@@ -9,8 +9,7 @@ sealed interface InstallStatus {
     data class InstallError(val error: Throwable): InstallStatus
 
     /* TODO:
-    *   1) добавить в БД статус
-    *   2) добавить возможность удаления приложения*/
+    *   1) добавить возможность удаления приложения*/
     data object UninstallPrepared: InstallStatus
     data class Uninstalling(val progress: Int): InstallStatus
     data class UninstallError(val error: Throwable): InstallStatus
