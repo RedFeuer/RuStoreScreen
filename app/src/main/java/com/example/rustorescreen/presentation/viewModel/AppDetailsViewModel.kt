@@ -11,6 +11,7 @@ import com.example.rustorescreen.domain.useCase.InstallAppUseCase
 import com.example.rustorescreen.domain.useCase.UpdateAppCategoryUseCase
 import com.example.rustorescreen.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -53,8 +54,6 @@ class AppDetailsViewModel  @Inject constructor (
 
     private val installTrigger = MutableStateFlow<String?>(null) // поток наблюдения за установкой приложения
 
-
-    private var installApkJob: Job? = null // ссылка на Корутину, в которой запускается установка приложения
 
     /**
      * Внутренний StateFlow, содержащий текущее состояние экрана.
@@ -121,6 +120,7 @@ class AppDetailsViewModel  @Inject constructor (
     }
 
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun getAppDetails() {
         combine(
             flow = getAppDetailsUseCase(appId), // эмитит каждое (отличное от текущего, тк stateflow) изменение в БД
