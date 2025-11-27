@@ -25,10 +25,10 @@ class InstallStatusConverter {
             is InstallStatus.InstallStarted -> "InstallStarted"
             is InstallStatus.Installing -> "Installing: ${status.progress}"
             is InstallStatus.Installed -> "Installed"
-            is InstallStatus.InstallError -> "InstallError:${status.error.message ?: "Unknown"}"
+            is InstallStatus.InstallError -> "InstallError: ${status.error.message ?: "Unknown"}"
             is InstallStatus.UninstallPrepared -> "UninstallPrepared"
-            is InstallStatus.Uninstalling -> "Uninstalling${status.progress}"
-            is InstallStatus.UninstallError -> "UninstallError:${status.error.message ?: "Unknown"}"
+            is InstallStatus.Uninstalling -> "Uninstalling: ${status.progress}"
+            is InstallStatus.UninstallError -> "UninstallError: ${status.error.message ?: "Unknown"}"
             null -> null
         }
     }
@@ -38,7 +38,7 @@ class InstallStatusConverter {
         if (str.isNullOrEmpty()) return null
 
         val parts = str.split( // для сохранения и выгрузки прогресса
-            ":",
+            ": ",
             limit = 2,
         )
         val type = parts[0]
