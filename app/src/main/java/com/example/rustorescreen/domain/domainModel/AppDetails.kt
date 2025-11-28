@@ -13,6 +13,7 @@ package com.example.rustorescreen.domain.domainModel
  * @property screenshotUrlList Список URL-адресов скриншотов приложения.
  * @property description Краткое описание приложения.
  */
+/* TODO: убрать installStatus, так как он смешивает UI-логику и бизнес-логику */
 data class AppDetails(
     val id: String,
     val name: String,
