@@ -39,7 +39,8 @@ fun InstallControl(
             )
         }
         is InstallStatus.Installed -> {
-            /* состояние удаления */
+            /* TODO: реализовать на изменени панели, чтобы теперь появлялось окошко
+                *   открыть и удалить*/
             UninstallButton(
                 content = content,
                 onClick = installActions.uninstall, // = viewModel.uninstallApp()
@@ -93,11 +94,8 @@ fun InstallButton(
                 }
             }
             is InstallStatus.Installed -> {
-                /* TODO: реализовать на изменени панели, чтобы теперь появлялось окошко
-                *   открыть и удалить*/
                 Text(text = stringResource(R.string.installed))
             }
-            /* TODO: реализовать удаление*/
             else -> {
                 Text(text = stringResource(R.string.work_in_progress))
             }
@@ -105,7 +103,9 @@ fun InstallButton(
     }
 }
 
-/* TODO: сверстать*/
+/* TODO: сверстать
+*   тут надо поменять название, и надо типо column(button, button)
+*   чтобы было две кнопки - Удалить, Открыть в одной строчке*/
 @Composable
 fun UninstallButton(
     content: AppDetailsState.Content,
@@ -122,7 +122,6 @@ fun UninstallButton(
     }
 }
 
-/* TODO: сверстать*/
 @Composable
 fun ReinstallButton(
     content: AppDetailsState.Content,
@@ -178,11 +177,8 @@ fun ReinstallButton(
                 }
             }
             is InstallStatus.Installed -> {
-                /* TODO: реализовать на изменени панели, чтобы теперь появлялось окошко
-                *   открыть и удалить*/
                 Text(text = stringResource(R.string.installed))
             }
-            /* TODO: реализовать удаление*/
             else -> {
                 Text(text = stringResource(R.string.work_in_progress))
             }
