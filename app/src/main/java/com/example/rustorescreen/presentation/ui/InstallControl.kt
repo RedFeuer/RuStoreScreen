@@ -8,14 +8,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.domainModel.AppDetails
-import com.example.rustorescreen.presentation.viewModel.AppDetailsState
 import com.example.rustorescreen.domain.domainModel.InstallStatus
+import com.example.rustorescreen.presentation.viewModel.AppDetailsState
 
 
 @Composable
@@ -31,7 +35,7 @@ fun InstallControl(
             InstallButton(
                 content = content,
                 onClick = installActions.install, // = viewModel.installApp()
-                modifier = modifier
+                modifier = modifier,
             )
         }
         is InstallStatus.Installed -> {
@@ -47,7 +51,7 @@ fun InstallControl(
             ReinstallButton(
                 content = content,
                 onClick = installActions.reinstall, // = viewModel.reinstallApp()
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }
@@ -57,7 +61,7 @@ fun InstallControl(
 fun InstallButton(
     content: AppDetailsState.Content,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val app: AppDetails = content.appDetails
     Button(
@@ -123,14 +127,65 @@ fun UninstallButton(
 fun ReinstallButton(
     content: AppDetailsState.Content,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
+    val app: AppDetails = content.appDetails
+
+    var showPreviousInstallationProgress by remember { mutableStateOf(true) }
+
     Button(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
         contentPadding = PaddingValues(vertical = 8.dp),
         modifier = modifier,
     ) {
-        Text(text = stringResource(R.string.reinstall))
+        val currentInstallStatus: InstallStatus = app.installStatus
+
+        /* определяем, нужно ли на этом статусе загрузки показывать, что был предыдущий прогресс */
+        val shouldShowPreviousProgress: Boolean = when(currentInstallStatus) {
+            is InstallStatus.InstallPrepared -> true
+            is InstallStatus. InstallStarted -> true
+            is InstallStatus.Installing -> true
+            else -> false
+        }
+
+        /* показываем предыдущий прогресс, если надо(если он был прерван в прошлый раз) */
+        if (shouldShowPreviousProgress && showPreviousInstallationProgress) {
+            Text(text = stringResource(R.string.previousProgress))
+            showPreviousInstallationProgress = false
+        }
+
+        when (val currentInstallStatus = app.installStatus) {
+            is InstallStatus.Idle -> {
+                Text(text = stringResource(R.string.reinstall))
+            }
+            is InstallStatus.InstallPrepared -> {
+                Text(text = stringResource(R.string.installPrepared))
+            }
+            is InstallStatus.InstallStarted -> {
+                Text(text = stringResource(R.string.installStarted))
+            }
+            is InstallStatus.Installing -> {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = modifier,
+                ) {
+                    /* Вывод в формате:
+                    * Загрузки: <Количество процентов> %*/
+                    Text(text = stringResource(R.string.installing))
+                    Spacer(Modifier.height(2.dp))
+                    Text(text = currentInstallStatus.progress.toString() + '%')
+                }
+            }
+            is InstallStatus.Installed -> {
+                /* TODO: реализовать на изменени панели, чтобы теперь появлялось окошко
+                *   открыть и удалить*/
+                Text(text = stringResource(R.string.installed))
+            }
+            /* TODO: реализовать удаление*/
+            else -> {
+                Text(text = stringResource(R.string.work_in_progress))
+            }
+        }
     }
 }
