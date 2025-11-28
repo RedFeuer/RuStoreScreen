@@ -126,7 +126,7 @@ class AppDetailsViewModel  @Inject constructor (
      * Меняет состояние развернутое/свернутое описание у текущего приложения.
      * Ничего не делает, если состояние экрана не `AppDetailsState.Content`.
      */
-    fun expandDescription() {
+    fun toggleDescriptionExpanded() {
         _state.update { currentState ->
             if (currentState is AppDetailsState.Content) {
                 currentState.copy(descriptionExpanded = !currentState.descriptionExpanded)
@@ -147,9 +147,10 @@ class AppDetailsViewModel  @Inject constructor (
     fun getAppDetails() {
         combinedAppDetailsFlow
             .onEach { combinedAppDetails -> // результат лямбды-трансформера для каждого emit
+                val oldContent: AppDetailsState.Content? = _state.value as? AppDetailsState.Content
                 _state.value = AppDetailsState.Content(
                     appDetails = combinedAppDetails,
-                    descriptionExpanded = (_state.value as? AppDetailsState.Content)?.descriptionExpanded ?: false
+                    descriptionExpanded = oldContent?.descriptionExpanded ?: false,
                 )
             }
             .catch { error ->
@@ -163,13 +164,13 @@ class AppDetailsViewModel  @Inject constructor (
         viewModelScope.launch {
             try {
                 updateAppCategoryUseCase(id = appId, newCategory = newCategory)
-
-                val current = (_state.value as? AppDetailsState.Content)?.appDetails
+                val oldContent = _state.value as? AppDetailsState.Content
+                val current = oldContent?.appDetails
                 if (current != null) {
                     val updated = current.copy(category = newCategory)
                     _state.value = AppDetailsState.Content(
                         appDetails = updated, // сразу устанавливаем новую категорию
-                        descriptionExpanded = (_state.value as? AppDetailsState.Content)?.descriptionExpanded ?: false
+                        descriptionExpanded = oldContent?.descriptionExpanded ?: false,
                     )
                 }
             }
