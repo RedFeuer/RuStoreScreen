@@ -10,6 +10,7 @@ import com.example.rustorescreen.domain.domainModel.AppCategory
 import com.example.rustorescreen.domain.domainModel.AppDetails
 import com.example.rustorescreen.domain.domainModel.InstallStatus
 import com.example.rustorescreen.domain.repositoryInterface.AppDetailsRepository
+import com.example.rustorescreen.util.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -29,7 +30,7 @@ class AppDetailsRepositoryImpl @Inject constructor(
     private val appDetailsMapper: AppDetailsMapper,
     private val appDetailsEntityMapper: AppDetailsEntityMapper,
 
-//    private val logger: Logger,
+    private val logger: Logger,
 ): AppDetailsRepository {
 
     /**
@@ -44,9 +45,9 @@ class AppDetailsRepositoryImpl @Inject constructor(
     override fun getById(id: String): Flow<AppDetails> {
         return dao.getAppDetails(id).map { entity ->
             if (entity != null) { // получаем entity из базы данных
-//                /* в случае проблем с установкой - записать в Logcat что не так */
-//                val message: String = entity.installStatus.toString()
-//                logger.e(message = "getAppDetails", throwable = Throwable(message))
+                /* в случае проблем с установкой - записать в Logcat что не так */
+                val message: String = entity.installStatus.toString()
+                logger.e(message = "getAppDetails", throwable = Throwable(message))
 
                 appDetailsEntityMapper.toDomainModel(entity)
             }

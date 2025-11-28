@@ -40,7 +40,7 @@ fun AppDetailsContent(
     content: AppDetailsState.Content,
     onBackClick: () -> Unit,
     onShareClick: () -> Unit,
-    onInstallClick: () -> Unit,
+    installActions: InstallActions,
     onDescriptionExpandClick: () -> Unit,
     onDeveloperInfoClick: () -> Unit,
     onCategoryUpdateClick: (AppCategory) -> Unit,
@@ -65,9 +65,9 @@ fun AppDetailsContent(
         )
         Spacer(Modifier.height(4.dp))
 
-        InstallButton(
+        InstallControl(
             content = content,
-            onClick = onInstallClick,
+            installActions = installActions,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),

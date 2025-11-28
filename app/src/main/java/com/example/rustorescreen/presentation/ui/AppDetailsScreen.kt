@@ -72,6 +72,14 @@ fun AppDetailsScreen(
         is AppDetailsState.Content -> currentState.appDetails.description
         else -> app?.description ?: "" // если app null, то пустая строка
     }
+
+    val installActions = InstallActions(
+        install = { viewModel.installApp() },
+        /* TODO: добавить реализации кнопок удаление и переустановка в viewModel */
+        uninstall = { viewModel.showWorkInProgressMessage() },
+        reinstall = { viewModel.showWorkInProgressMessage() }
+    )
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -140,9 +148,7 @@ fun AppDetailsScreen(
                         // TODO: Реализовать функционал шаринга
                         viewModel.showWorkInProgressMessage()
                     },
-                    onInstallClick = {
-                        viewModel.installApp()
-                    },
+                    installActions = installActions,
                     onDescriptionExpandClick = {
                         viewModel.expandDescription()
                     },

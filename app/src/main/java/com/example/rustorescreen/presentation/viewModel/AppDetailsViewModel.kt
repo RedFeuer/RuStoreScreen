@@ -80,6 +80,30 @@ class AppDetailsViewModel  @Inject constructor (
      */
     val events = _events.receiveAsFlow()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val combinedAppDetailsFlow =
+        combine(
+            flow = getAppDetailsUseCase(appId), // эмитит каждое (отличное от текущего, тк stateflow) изменение в БД
+            flow2 = installTrigger
+                .flatMapLatest { triggerAppId ->
+                    if (triggerAppId != null) {
+                        installAppUseCase(triggerAppId)
+                    }
+                    else {
+                        flowOf(null)
+                    }
+                }
+        ) { appDetails, installStatus -> // последние полученные значение из двух потоков
+            /* ЭТО ПРОСТО transform из документации
+            лямбда-трансформер: показывает как получить mergedAppDetails из значений из двух потоков*/
+            if (installStatus != null) { // при нажатии кнопки установки для конкретного приложения меняем состояние на новое
+                appDetails.copy(installStatus = installStatus)
+            }
+            else { // если кнопку установки не нажимали, то предыдущее оставляем состояние(из БД)
+                appDetails
+            }
+        }
+
     /**
      * При создании ViewModel запускаем загрузку конкретного приложения.
      */
@@ -120,31 +144,11 @@ class AppDetailsViewModel  @Inject constructor (
     }
 
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun getAppDetails() {
-        combine(
-            flow = getAppDetailsUseCase(appId), // эмитит каждое (отличное от текущего, тк stateflow) изменение в БД
-            flow2 = installTrigger
-                .flatMapLatest { triggerAppId ->
-                    if (triggerAppId != null) {
-                        installAppUseCase(appId)
-                    }
-                    else {
-                        flowOf(null)
-                    }
-                }
-        ) { appDetails, installStatus -> // последние полученные значение из двух потоков
-            /* лямбда-трансформатор: показывает как получить mergedAppDetails из значений из двух потоков*/
-            if (installStatus != null) { // при нажатии кнопки установки для конкретного приложения меняем состояние на новое
-                appDetails.copy(installStatus = installStatus)
-            }
-            else { // если кнопку установки не нажимали, то предыдущее оставляем состояние(из БД)
-                appDetails
-            }
-        }
-            .onEach { mergedAppDetails -> // результат лямбды-трансформатора для каждого emit
+        combinedAppDetailsFlow
+            .onEach { combinedAppDetails -> // результат лямбды-трансформера для каждого emit
                 _state.value = AppDetailsState.Content(
-                    appDetails = mergedAppDetails,
+                    appDetails = combinedAppDetails,
                     descriptionExpanded = (_state.value as? AppDetailsState.Content)?.descriptionExpanded ?: false
                 )
             }
