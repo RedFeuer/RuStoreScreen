@@ -77,7 +77,7 @@ fun AppDetailsScreen(
         install = { viewModel.installApp() },
         /* TODO: добавить реализации кнопок удаление и переустановка в viewModel */
         uninstall = { viewModel.showWorkInProgressMessage() },
-        reinstall = { viewModel.showWorkInProgressMessage() }
+        reinstall = { viewModel.installApp() }
     )
 
     Scaffold(
@@ -150,7 +150,7 @@ fun AppDetailsScreen(
                     },
                     installActions = installActions,
                     onDescriptionExpandClick = {
-                        viewModel.expandDescription()
+                        viewModel.toggleDescriptionExpanded()
                     },
                     onDeveloperInfoClick = {
                         // TODO: Реализовать переход к информации о разработчике
