@@ -16,6 +16,8 @@
     <string name="installing">Загрузка: </string>
     <string name="installed">Установлено</string>
 
+    <string name="previousProgress">Требуется перезагрузить\nПредыдущее состояние: </string>
+
     <string name="app_details_screenshots">Скриншоты</string>
 
     <string name="back">Назад</string>
