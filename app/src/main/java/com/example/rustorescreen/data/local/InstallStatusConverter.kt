@@ -27,7 +27,7 @@ class InstallStatusConverter {
             is InstallStatus.Installed -> "Installed"
             is InstallStatus.InstallError -> "InstallError: ${status.error.message ?: "Unknown"}"
             is InstallStatus.UninstallPrepared -> "UninstallPrepared"
-            is InstallStatus.Uninstalling -> "Uninstalling: ${status.progress}"
+            is InstallStatus.Uninstalling -> "Uninstalling"
             is InstallStatus.UninstallError -> "UninstallError: ${status.error.message ?: "Unknown"}"
             null -> null
         }
@@ -58,10 +58,7 @@ class InstallStatusConverter {
                 InstallStatus.InstallError(error = Throwable(message))
             }
             "UninstallPrepared" -> InstallStatus.UninstallPrepared
-            "Uninstalling" -> {
-                val progress = arg?.toIntOrNull() ?: 0
-                InstallStatus.Uninstalling(progress = progress)
-            }
+            "Uninstalling" -> InstallStatus.Uninstalling
             "UninstallError" -> {
                 val message = arg ?: "Unknown"
                 InstallStatus.UninstallError(error = Throwable(message))

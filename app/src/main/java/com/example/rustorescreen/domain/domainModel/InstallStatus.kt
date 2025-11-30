@@ -11,6 +11,6 @@ sealed interface InstallStatus {
     /* TODO:
     *   1) добавить возможность удаления приложения*/
     data object UninstallPrepared: InstallStatus
-    data class Uninstalling(val progress: Int): InstallStatus
+    data object Uninstalling: InstallStatus
     data class UninstallError(val error: Throwable): InstallStatus
 }
