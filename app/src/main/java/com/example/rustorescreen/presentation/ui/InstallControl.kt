@@ -54,7 +54,7 @@ fun InstallControl(
             /* состояние ошибки или прерывания загрузки */
             ReinstallButton(
                 content = content,
-                onClick = installActions.reinstall, // = viewModel.reinstallApp()
+                onClick = installActions.reinstall, // = viewModel.installApp()
                 modifier = modifier,
             )
         }
