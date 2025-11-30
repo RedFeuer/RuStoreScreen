@@ -1,7 +1,9 @@
 package com.example.rustorescreen.presentation.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,7 +45,8 @@ fun InstallControl(
                 *   открыть и удалить*/
             UninstallButton(
                 content = content,
-                onClick = installActions.uninstall, // = viewModel.uninstallApp()
+                onUninstallClick = installActions.uninstall, // = viewModel.uninstallApp()
+                onOpenClick = installActions.open, // = viewModel.showWorkInProgressMessage
                 modifier = modifier
             )
         }
@@ -109,16 +112,54 @@ fun InstallButton(
 @Composable
 fun UninstallButton(
     content: AppDetailsState.Content,
-    onClick: () -> Unit,
+    onUninstallClick: () -> Unit,
+    onOpenClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Button(
-        onClick = onClick,
-        shape = RoundedCornerShape(16.dp),
-        contentPadding = PaddingValues(vertical = 8.dp),
-        modifier = modifier,
-    ) {
-        Text(text = stringResource(R.string.uninstall))
+    val app: AppDetails = content.appDetails
+    val currentInstallStatus = app.installStatus
+
+    when (currentInstallStatus) {
+        is InstallStatus.Installed -> {
+            /* кнопки удалить удалить - открыть */
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = modifier
+            ) {
+                /* кнопка удаления приложения */
+                Button(
+                    onClick = onUninstallClick,
+                    shape = RoundedCornerShape(16.dp),
+                    contentPadding = PaddingValues(vertical = 8.dp),
+                    modifier = modifier.weight(1f)
+                ) {
+                    Text(text = stringResource(R.string.uninstall))
+                }
+
+                /* WIP: кнопка открыть приложение */
+                Button(
+                    onClick = onOpenClick,
+                    shape = RoundedCornerShape(16.dp),
+                    contentPadding = PaddingValues(vertical = 8.dp),
+                    modifier = modifier.weight(1f)
+                ) {
+                    Text(text = stringResource(R.string.open))
+                }
+            }
+        }
+        else -> {
+            /* кнопка, на который пишется статус удаления */
+            Button(
+                onClick = onUninstallClick,
+                shape = RoundedCornerShape(16.dp),
+                contentPadding = PaddingValues(vertical = 8.dp),
+                modifier = modifier,
+            ) {
+                /* TODO: реализовать удаление */
+                Text(text = stringResource(R.string.uninstall))
+            }
+        }
     }
 }
 
