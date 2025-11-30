@@ -77,7 +77,8 @@ fun AppDetailsScreen(
         install = { viewModel.installApp() },
         /* TODO: добавить реализации кнопок удаление и переустановка в viewModel */
         uninstall = { viewModel.showWorkInProgressMessage() },
-        reinstall = { viewModel.installApp() }
+        reinstall = { viewModel.installApp() },
+        open = { viewModel.showWorkInProgressMessage() },
     )
 
     Scaffold(
