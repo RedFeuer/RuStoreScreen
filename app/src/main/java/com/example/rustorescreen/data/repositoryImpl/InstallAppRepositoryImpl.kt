@@ -28,17 +28,17 @@ class InstallAppRepositoryImpl @Inject constructor(
             }
 
             emit(InstallStatus.InstallPrepared) // изменения на экран
-            apkUrlApi.preparingApk()
             withContext(Dispatchers.IO) {
                 appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.InstallPrepared) // изменения в БД
             }
+            apkUrlApi.preparingApk()
 
             /* получаем URL для загрузки .apk файла из сети(API) */
-            apkUrlApi.getApk()
-            emit(InstallStatus.InstallStarted)
             withContext(Dispatchers.IO) {
                 appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.InstallStarted) // изменения в БД
             }
+            emit(InstallStatus.InstallStarted)
+            apkUrlApi.getApk()
 
             /* отправляем все изменения при загрузке(от 1 до 100) .apk файла */
             emitAll(
