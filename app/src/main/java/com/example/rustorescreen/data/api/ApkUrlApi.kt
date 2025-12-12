@@ -4,7 +4,7 @@ import kotlinx.coroutines.delay
 
 class ApkUrlApi {
     suspend fun preparingApk() {
-        delay(3000L)
+        delay(300L)
     }
 
     suspend fun getApk() {
