@@ -9,6 +9,8 @@
     <string name="app_details_size">Размер</string>
 
     <string name="uninstall">Удалить</string>
+    <string name="uninstallPrepared">Подготовка удаления</string>
+    <string name="uninstalling">Удаление…</string>
     <string name="reinstall">Переустановить</string>
     <string name="install">Установить</string>
     <string name="installPrepared">Подготовка загрузки</string>

@@ -22,6 +22,7 @@ class InstallAppRepositoryImpl @Inject constructor(
     override fun installApk(id: String): Flow<InstallStatus> =
         flow {
             emit(InstallStatus.InstallPrepared) // изменения на экран
+            apkUrlApi.preparingApk()
             withContext(Dispatchers.IO) {
                 appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.InstallPrepared) // изменения в БД
             }
@@ -56,6 +57,32 @@ class InstallAppRepositoryImpl @Inject constructor(
                 emit(InstallStatus.InstallError(error))
                 withContext(Dispatchers.IO) {
                     appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.InstallError(error))
+                }
+            }
+
+    override fun uninstallApk(id: String): Flow<InstallStatus> =
+        flow {
+            emit(InstallStatus.UninstallPrepared)
+            withContext(Dispatchers.IO) {
+                appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.UninstallPrepared)
+            }
+            apkUrlApi.preparingApk()
+
+            emit(InstallStatus.Uninstalling)
+            withContext(Dispatchers.IO) {
+                appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.Uninstalling)
+            }
+            apkUrlApi.deleteApi()
+
+            emit(InstallStatus.Idle)
+            withContext(Dispatchers.IO) {
+                appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.Idle)
+            }
+        }
+            .catch{ error ->
+                emit(InstallStatus.UninstallError(error))
+                withContext(Dispatchers.IO) {
+                    appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.UninstallError(error))
                 }
             }
 }
