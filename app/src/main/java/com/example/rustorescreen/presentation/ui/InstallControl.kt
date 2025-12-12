@@ -31,21 +31,22 @@ fun InstallControl(
     modifier: Modifier = Modifier
 ) {
     val app: AppDetails = content.appDetails
-    when (val currentInstallStatus = app.installStatus) {
-        is InstallStatus.Idle -> {
-            /* состояние загрузки */
+    val currentInstallStatus = app.installStatus
+    when (currentInstallStatus) {
+        is InstallStatus.Idle,
+        is InstallStatus.InstallPrepared,
+        is InstallStatus.InstallStarted,
+        is InstallStatus.Installing -> {
             InstallButton(
                 content = content,
                 onClick = installActions.install, // = viewModel.installApp()
                 modifier = modifier,
             )
         }
-        is InstallStatus.Installed -> {
-//        is InstallStatus.UninstallPrepared,
-//        is InstallStatus.Installing,
-//        is InstallStatus.UninstallError -> {
-            /* TODO: реализовать на изменени панели, чтобы теперь появлялось окошко
-                *   открыть и удалить*/
+
+        is InstallStatus.Installed,
+        is InstallStatus.UninstallPrepared,
+        is InstallStatus.Uninstalling -> {
             UninstallButton(
                 content = content,
                 onUninstallClick = installActions.uninstall, // = viewModel.uninstallApp()
@@ -53,59 +54,11 @@ fun InstallControl(
                 modifier = modifier
             )
         }
-        else -> {
-            /* состояние ошибки или прерывания загрузки */
-            ReinstallButton(
-                content = content,
-                onClick = installActions.reinstall, // = viewModel.installApp()
-                modifier = modifier,
-            )
-        }
-    }
-}
 
-@Composable
-fun InstallButton(
-    content: AppDetailsState.Content,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val app: AppDetails = content.appDetails
-    Button(
-        onClick = onClick,
-        shape = RoundedCornerShape(16.dp),
-        contentPadding = PaddingValues(vertical = 8.dp),
-        modifier = modifier,
-    ) {
-        when (val currentInstallStatus = app.installStatus) {
-            is InstallStatus.Idle -> {
-                Text(text = stringResource(R.string.install))
-            }
-            is InstallStatus.InstallPrepared -> {
-                Text(text = stringResource(R.string.installPrepared))
-            }
-            is InstallStatus.InstallStarted -> {
-                Text(text = stringResource(R.string.installStarted))
-            }
-            is InstallStatus.Installing -> {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = modifier,
-                ) {
-                    /* Вывод в формате:
-                    * Загрузки: <Количество процентов> %*/
-                    Text(text = stringResource(R.string.installing))
-                    Spacer(Modifier.height(2.dp))
-                    Text(text = currentInstallStatus.progress.toString() + '%')
-                }
-            }
-            is InstallStatus.Installed -> {
-                Text(text = stringResource(R.string.installed))
-            }
-            else -> {
-                Text(text = stringResource(R.string.work_in_progress))
-            }
+        else -> { // ошибка установки или удаления, возможно лучше убрать и обрабатывать внутри кнопок
+            Text(text = "Некая ошибка") // скорее всего ошибка и не нужна
         }
+
     }
 }
 
@@ -176,14 +129,30 @@ fun UninstallButton(
 }
 
 @Composable
-fun ReinstallButton(
+fun InstallButton(
     content: AppDetailsState.Content,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val app: AppDetails = content.appDetails
+    val hasInstallAttempts: Boolean = app.hasInstallAttempts
 
-    var showPreviousInstallationProgress by remember { mutableStateOf(true) }
+    /* как начальное состояние записываем hasInstallAttempts
+    * в этом поле хранится информация о том, была ли прервана установка до этого
+    * если да - то выводится сообщение о перезагрузке и информация о предыдущем состоянии
+    * также при переходе от одного этапа к другому пропадет информация о предыдущем состоянии
+    * если нет - то просто обычный процесс установки */
+    var showPreviousInstallationProgress by remember { mutableStateOf(hasInstallAttempts) }
+
+    val currentInstallStatus: InstallStatus = app.installStatus
+
+    /* определяем, нужно ли на этом статусе загрузки показывать, что был предыдущий прогресс */
+    val shouldShowPreviousProgress: Boolean = when(currentInstallStatus) {
+        is InstallStatus.InstallPrepared -> true
+        is InstallStatus.InstallStarted -> true
+        is InstallStatus.Installing -> true
+        else -> false
+    }
 
     Button(
         onClick = onClick,
@@ -191,16 +160,6 @@ fun ReinstallButton(
         contentPadding = PaddingValues(vertical = 8.dp),
         modifier = modifier,
     ) {
-        val currentInstallStatus: InstallStatus = app.installStatus
-
-        /* определяем, нужно ли на этом статусе загрузки показывать, что был предыдущий прогресс */
-        val shouldShowPreviousProgress: Boolean = when(currentInstallStatus) {
-            is InstallStatus.InstallPrepared -> true
-            is InstallStatus. InstallStarted -> true
-            is InstallStatus.Installing -> true
-            else -> false
-        }
-
         /* показываем предыдущий прогресс, если надо(если он был прерван в прошлый раз) */
         if (shouldShowPreviousProgress && showPreviousInstallationProgress) {
             Text(text = stringResource(R.string.previousProgress))
@@ -209,7 +168,7 @@ fun ReinstallButton(
 
         when (val currentInstallStatus = app.installStatus) {
             is InstallStatus.Idle -> {
-                Text(text = stringResource(R.string.reinstall))
+                Text(text = stringResource(R.string.install))
             }
             is InstallStatus.InstallPrepared -> {
                 Text(text = stringResource(R.string.installPrepared))
