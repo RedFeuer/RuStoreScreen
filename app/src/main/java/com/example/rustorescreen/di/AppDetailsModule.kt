@@ -13,6 +13,7 @@ import com.example.rustorescreen.domain.repositoryInterface.DownloadingRepositor
 import com.example.rustorescreen.domain.repositoryInterface.InstallAppRepository
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
 import com.example.rustorescreen.domain.useCase.InstallAppUseCase
+import com.example.rustorescreen.domain.useCase.UninstallAppUseCase
 import com.example.rustorescreen.domain.useCase.UpdateAppCategoryUseCase
 import dagger.Binds
 import dagger.Module
@@ -83,6 +84,12 @@ abstract class AppDetailsModule {
         @Singleton
         fun provideInstallAppUseCase(repository: InstallAppRepository): InstallAppUseCase {
             return InstallAppUseCase(repository)
+        }
+
+        @Provides
+        @Singleton
+        fun provideUninstallAppUseCase(repository: InstallAppRepository): UninstallAppUseCase {
+            return UninstallAppUseCase(repository)
         }
 
         /**

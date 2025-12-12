@@ -28,6 +28,7 @@ data class AppDetailsDto(
     @SerialName("name")
     val title: String = "",
     val installStatus: InstallStatus,
+    val hasInstallAttempts: Boolean,
 
     val developer: String = "",
     val category: AppCategory = AppCategory.APP,

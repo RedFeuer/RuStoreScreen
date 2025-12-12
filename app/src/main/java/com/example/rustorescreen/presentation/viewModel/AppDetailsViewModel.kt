@@ -8,11 +8,12 @@ import com.example.rustorescreen.R
 import com.example.rustorescreen.domain.domainModel.AppCategory
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
 import com.example.rustorescreen.domain.useCase.InstallAppUseCase
+import com.example.rustorescreen.domain.useCase.UninstallAppUseCase
 import com.example.rustorescreen.domain.useCase.UpdateAppCategoryUseCase
+import com.example.rustorescreen.presentation.ui.InstallCommand
 import com.example.rustorescreen.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +44,7 @@ class AppDetailsViewModel  @Inject constructor (
     private val getAppDetailsUseCase: GetAppDetailsUseCase,
     private val updateAppCategoryUseCase: UpdateAppCategoryUseCase,
     private val installAppUseCase: InstallAppUseCase,
+    private val uninstallAppUseCase: UninstallAppUseCase,
     private val logger: Logger,
     savedStateHandle: SavedStateHandle, // для получения сохраненного состояния(включая параметры навигации)
 ): ViewModel() {
@@ -52,7 +54,7 @@ class AppDetailsViewModel  @Inject constructor (
      */
     private val appId: String = checkNotNull(savedStateHandle.get<String>("appId"))
 
-    private val installTrigger = MutableStateFlow<String?>(null) // поток наблюдения за установкой приложения
+    private val installTrigger = MutableStateFlow<InstallCommand?>(null) // поток наблюдения за установкой приложения
 
 
     /**
@@ -85,12 +87,11 @@ class AppDetailsViewModel  @Inject constructor (
         combine(
             flow = getAppDetailsUseCase(appId), // эмитит каждое (отличное от текущего, тк stateflow) изменение в БД
             flow2 = installTrigger
-                .flatMapLatest { triggerAppId ->
-                    if (triggerAppId != null) {
-                        installAppUseCase(triggerAppId)
-                    }
-                    else {
-                        flowOf(null)
+                .flatMapLatest { installCommand ->
+                    when (installCommand) {
+                        is InstallCommand.Install -> installAppUseCase(appId)
+                        is InstallCommand.Uninstall -> uninstallAppUseCase(appId)
+                        null -> flowOf(null)
                     }
                 }
         ) { appDetails, installStatus -> // последние полученные значение из двух потоков
@@ -140,7 +141,11 @@ class AppDetailsViewModel  @Inject constructor (
     *    для ошибки загрузки: вместо состояния ошибки экрана сделать сброс до InstallStatus.Idle
     *     и snack об ошибке загрузки*/
     fun installApp() {
-        installTrigger.value = appId
+        installTrigger.value = InstallCommand.Install(appId)
+    }
+
+    fun uninstallApp() {
+        installTrigger.value = InstallCommand.Uninstall(appId)
     }
 
 

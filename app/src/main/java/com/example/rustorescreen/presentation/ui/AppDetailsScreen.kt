@@ -76,7 +76,7 @@ fun AppDetailsScreen(
     val installActions = InstallActions(
         install = { viewModel.installApp() },
         /* TODO: добавить реализации кнопок удаление и переустановка в viewModel */
-        uninstall = { viewModel.showWorkInProgressMessage() },
+        uninstall = { viewModel.uninstallApp() },
         reinstall = { viewModel.installApp() },
         open = { viewModel.showWorkInProgressMessage() },
     )

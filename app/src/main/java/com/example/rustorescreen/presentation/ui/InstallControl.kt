@@ -41,6 +41,9 @@ fun InstallControl(
             )
         }
         is InstallStatus.Installed -> {
+//        is InstallStatus.UninstallPrepared,
+//        is InstallStatus.Installing,
+//        is InstallStatus.UninstallError -> {
             /* TODO: реализовать на изменени панели, чтобы теперь появлялось окошко
                 *   открыть и удалить*/
             UninstallButton(
@@ -156,8 +159,17 @@ fun UninstallButton(
                 contentPadding = PaddingValues(vertical = 8.dp),
                 modifier = modifier,
             ) {
-                /* TODO: реализовать удаление */
-                Text(text = stringResource(R.string.uninstall))
+                when (currentInstallStatus) {
+                    is InstallStatus.UninstallPrepared -> {
+                        Text(text = stringResource(R.string.uninstallPrepared))
+                    }
+                    is InstallStatus.Uninstalling -> {
+                        Text(text = stringResource(R.string.uninstalling))
+                    }
+                    else -> {
+                        Text(text = stringResource(R.string.work_in_progress))
+                    }
+                }
             }
         }
     }

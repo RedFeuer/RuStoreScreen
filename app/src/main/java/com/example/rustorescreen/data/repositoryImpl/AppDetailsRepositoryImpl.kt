@@ -80,4 +80,8 @@ class AppDetailsRepositoryImpl @Inject constructor(
     override suspend fun setInstallStatus(id: String, newInstallStatus: InstallStatus) {
         dao.updateInstallStatus(id = id, newInstallStatus = newInstallStatus)
     }
+
+    override suspend fun setHasInstallAttempts(id: String, newHasInstallAttempts: Boolean) {
+        dao.updateHasInstallAttempts(id = id, newHasInstallAttempts = newHasInstallAttempts)
+    }
 }

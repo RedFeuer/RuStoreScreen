@@ -7,6 +7,7 @@ import com.example.rustorescreen.data.local.AppDetailsDao
 import com.example.rustorescreen.data.local.AppDetailsEntityMapper
 import com.example.rustorescreen.data.local.AppListDao
 import com.example.rustorescreen.data.local.MIGRATION_2_3
+import com.example.rustorescreen.data.local.MIGRATION_3_4
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,7 +25,10 @@ class LocalModule {
             klass = AppDatabase::class.java,
             name = AppDatabase.DATABASE_NAME
         )
-            .addMigrations(MIGRATION_2_3) // добавлена колонка installStatus
+            .addMigrations(
+                    MIGRATION_2_3, // добавлена колонка installStatus
+                    MIGRATION_3_4,
+            )
             .build()
     }
 

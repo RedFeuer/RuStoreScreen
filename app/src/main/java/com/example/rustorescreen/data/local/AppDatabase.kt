@@ -6,7 +6,7 @@ import androidx.room.TypeConverters
 
 @Database(
     entities = [AppDetailsEntity::class],
-    version = 3,
+    version = 4,
 )
 @TypeConverters(InstallStatusConverter::class,
     CategoryConverter::class, ScreenshotsListConverter::class)

@@ -18,6 +18,7 @@ data class AppDetails(
     val id: String,
     val name: String,
     val installStatus: InstallStatus, // по умолчанию - не установлено
+    val hasInstallAttempts: Boolean, // первая попытка установки - false, имелись неудачные - true
     val developer: String,
     val category: AppCategory,
     val ageRating: Int,

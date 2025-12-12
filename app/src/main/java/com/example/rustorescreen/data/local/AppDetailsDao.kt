@@ -21,4 +21,7 @@ interface AppDetailsDao {
 
     @Query("UPDATE app_details SET installStatus = :newInstallStatus WHERE id = :id")
     suspend fun updateInstallStatus(id: String, newInstallStatus: InstallStatus)
+
+    @Query("UPDATE app_details SET hasInstallAttempts = :newHasInstallAttempts WHERE id = :id")
+    suspend fun updateHasInstallAttempts(id: String, newHasInstallAttempts: Boolean)
 }

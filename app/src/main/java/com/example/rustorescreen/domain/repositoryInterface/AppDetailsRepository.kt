@@ -23,4 +23,6 @@ interface AppDetailsRepository {
     suspend fun setAppCategory(id: String, newCategory: AppCategory)
 
     suspend fun setInstallStatus(id: String, newInstallStatus: InstallStatus)
+
+    suspend fun setHasInstallAttempts(id: String, newHasInstallAttempts: Boolean)
 }

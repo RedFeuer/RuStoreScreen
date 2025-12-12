@@ -20,6 +20,7 @@ class AppDetailsMapper {
         id = dto.id,
         name = dto.title,
         installStatus = dto.installStatus,
+        hasInstallAttempts = dto.hasInstallAttempts,
         developer = dto.developer,
         category = dto.category,
         ageRating = dto.ageRating,

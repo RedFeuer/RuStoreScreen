@@ -21,6 +21,12 @@ class InstallAppRepositoryImpl @Inject constructor(
 ) : InstallAppRepository {
     override fun installApk(id: String): Flow<InstallStatus> =
         flow {
+            /* устанавливаем в БД статус, что была попытка установки,
+            * чтобы если установка будет прервана, то переустановить потом приложение */
+            withContext(Dispatchers.IO) {
+                appDetailsRepository.setHasInstallAttempts(id = id, newHasInstallAttempts = true)
+            }
+
             emit(InstallStatus.InstallPrepared) // изменения на экран
             apkUrlApi.preparingApk()
             withContext(Dispatchers.IO) {
@@ -51,6 +57,10 @@ class InstallAppRepositoryImpl @Inject constructor(
             emit(InstallStatus.Installed)
             withContext(Dispatchers.IO) {
                 appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.Installed)
+            }
+
+            withContext(Dispatchers.IO) {
+                appDetailsRepository.setHasInstallAttempts(id = id, newHasInstallAttempts = false)
             }
         }
             .catch { error ->
