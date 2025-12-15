@@ -2,8 +2,6 @@ package com.example.rustorescreen.di
 
 import com.example.rustorescreen.data.api.ApkUrlApi
 import com.example.rustorescreen.data.api.AppListAPI
-import com.example.rustorescreen.data.local.AppDetailsDao
-import com.example.rustorescreen.data.local.AppDetailsEntityMapper
 import com.example.rustorescreen.data.mapper.AppDetailsMapper
 import com.example.rustorescreen.data.repositoryImpl.AppDetailsRepositoryImpl
 import com.example.rustorescreen.data.repositoryImpl.DownloadingRepositoryImpl
@@ -28,7 +26,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-
 
 /* TODO: ПЕРЕПИСАТЬ ДОКУМЕНТАЦИЮ */
 /**
