@@ -73,9 +73,8 @@ fun UninstallButton(
     modifier: Modifier = Modifier
 ) {
     val app: AppDetails = content.appDetails
-    val currentInstallStatus = app.installStatus
 
-    when (currentInstallStatus) {
+    when (val currentInstallStatus = app.installStatus) {
         is InstallStatus.Installed -> {
             /* кнопки удалить удалить - открыть */
             Row(
