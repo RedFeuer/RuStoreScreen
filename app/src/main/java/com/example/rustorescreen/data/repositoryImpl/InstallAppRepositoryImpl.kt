@@ -59,6 +59,7 @@ class InstallAppRepositoryImpl @Inject constructor(
                 appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.Installed)
             }
 
+            /* устанавливаем в БД статус, что попыток установки не было*/
             withContext(Dispatchers.IO) {
                 appDetailsRepository.setHasInstallAttempts(id = id, newHasInstallAttempts = false)
             }
