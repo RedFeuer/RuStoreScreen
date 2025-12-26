@@ -87,6 +87,11 @@ dependencies {
     kapt("androidx.room:room-compiler:2.8.3")
     implementation(libs.room.ktx)
 
+    /* kotlinx-coroutines-test */
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+
+    testImplementation("io.mockk:mockk:1.14.3")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
