@@ -123,7 +123,6 @@ fun AppDetailsScreen(
                 AppDetailsLoading(
                     modifier = Modifier
                         .fillMaxSize()
-                        .safeDrawingPadding()
                         .padding(contentPadding),
                 )
             }
@@ -133,7 +132,6 @@ fun AppDetailsScreen(
                     onRefreshClick = { viewModel.getAppDetails() },
                     modifier = Modifier
                         .fillMaxSize()
-                        .safeDrawingPadding()
                         .padding(contentPadding),
                 )
             }
@@ -163,7 +161,6 @@ fun AppDetailsScreen(
                     },
                     modifier = Modifier
                         .fillMaxSize()
-                        .safeDrawingPadding()
                         .padding(contentPadding),
                 )
             }

@@ -10,14 +10,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -56,6 +57,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @param onAppClick Колбек, вызываемый при клике на элемент списка. Получает `app.id`. Переход на экран конкретного приложения
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppListScreen(
     onAppClick: (String) -> Unit
@@ -72,6 +74,9 @@ fun AppListScreen(
     )
 
     Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(title = { Text("RuStore") })
+        },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { contentPadding ->
         when (val currentState = state.value) {
@@ -79,7 +84,6 @@ fun AppListScreen(
                 AppListLoading(
                     modifier = Modifier
                         .fillMaxSize()
-                        .safeDrawingPadding()
                         .padding(contentPadding),
                 )
             }
@@ -89,7 +93,6 @@ fun AppListScreen(
                     onRefreshClick = { viewModel.getAppList() },
                     modifier = Modifier
                         .fillMaxSize()
-                        .safeDrawingPadding()
                         .padding(contentPadding),
                 )
             }
@@ -101,7 +104,6 @@ fun AppListScreen(
                     onIconClick = { viewModel.showTapOnIconMessage() },
                     modifier = Modifier
                         .fillMaxSize()
-                        .safeDrawingPadding()
                         .padding(contentPadding)
                 )
             }
