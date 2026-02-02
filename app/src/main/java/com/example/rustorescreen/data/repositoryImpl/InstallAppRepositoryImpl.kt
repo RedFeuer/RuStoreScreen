@@ -21,7 +21,7 @@ class InstallAppRepositoryImpl @Inject constructor(
     private val apkUrlApi: ApkUrlApi,
     private val downloadingRepository: DownloadingRepository,
     // внедрение зависимости Dicpatchers.IO
-    @DispatcherIO private val dispatcherIo: CoroutineDispatcher,
+    @DispatcherIO private val dispatcher: CoroutineDispatcher,
 ) : InstallAppRepository {
     override fun installApk(id: String): Flow<InstallStatus> =
         flow {
@@ -70,13 +70,13 @@ class InstallAppRepositoryImpl @Inject constructor(
     }
 
     private suspend fun setInstallStatus(id: String, installStatus: InstallStatus) {
-        withContext(dispatcherIo) {
+        withContext(dispatcher) {
             appDetailsRepository.setInstallStatus(id, installStatus)
         }
     }
 
     private suspend fun setHasInstallAttempts(id: String, newHasInstallAttempts: Boolean) {
-        withContext(dispatcherIo) {
+        withContext(dispatcher) {
             appDetailsRepository.setHasInstallAttempts(id = id, newHasInstallAttempts = newHasInstallAttempts)
         }
     }
