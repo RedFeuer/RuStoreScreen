@@ -3,6 +3,10 @@ package com.example.rustorescreen.data.api
 import kotlinx.coroutines.delay
 
 class ApkUrlApi {
+    suspend fun lookingForApk() {
+        delay(300L)
+    }
+
     suspend fun preparingApk() {
         delay(300L)
     }
