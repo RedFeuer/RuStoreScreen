@@ -38,7 +38,6 @@ import com.example.rustorescreen.presentation.viewModel.AppDetailsState
 @Composable
 fun AppDetailsContent(
     content: AppDetailsState.Content,
-    onBackClick: () -> Unit,
     onShareClick: () -> Unit,
     installActions: InstallActions,
     onDescriptionExpandClick: () -> Unit,
@@ -52,12 +51,6 @@ fun AppDetailsContent(
     val scrollState = rememberScrollState()
 
     Column(modifier = modifier.verticalScroll(scrollState)) {
-//        Toolbar(
-//            onBackClick = onBackClick,
-//            onShareClick = onShareClick,
-//        )
-//        Spacer(modifier = Modifier.height(4.dp))
-
         AppDetailsHeader(
             appDetails = appDetails,
             onCategoryUpdateClick = onCategoryUpdateClick,

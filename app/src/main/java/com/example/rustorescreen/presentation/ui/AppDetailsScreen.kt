@@ -3,7 +3,6 @@ package com.example.rustorescreen.presentation.ui
 import android.content.Intent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Share
@@ -139,9 +138,6 @@ fun AppDetailsScreen(
             is AppDetailsState.Content -> {
                 AppDetailsContent(
                     content = currentState,
-                    onBackClick = {
-                        onBack()
-                    },
                     onShareClick = {
                         // TODO: Реализовать функционал шаринга
                         viewModel.showWorkInProgressMessage()
