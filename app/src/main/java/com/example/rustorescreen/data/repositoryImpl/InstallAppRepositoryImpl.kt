@@ -8,6 +8,7 @@ import com.example.rustorescreen.domain.repositoryInterface.DownloadingRepositor
 import com.example.rustorescreen.domain.repositoryInterface.InstallAppRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
@@ -26,21 +27,15 @@ class InstallAppRepositoryImpl @Inject constructor(
         flow {
             /* устанавливаем в БД статус, что была попытка установки,
             * чтобы если установка будет прервана, то переустановить потом приложение */
-            withContext(dispatcherIo) {
-                appDetailsRepository.setHasInstallAttempts(id = id, newHasInstallAttempts = true)
-            }
+            setHasInstallAttempts(id, true)
 
-            emit(InstallStatus.InstallPrepared) // изменения на экран
-            withContext(dispatcherIo) {
-                appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.InstallPrepared) // изменения в БД
-            }
-            apkUrlApi.preparingApk()
+            apkUrlApi.lookingForApk()
 
             /* получаем URL для загрузки .apk файла из сети(API) */
-            withContext(dispatcherIo) {
-                appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.InstallStarted) // изменения в БД
-            }
-            emit(InstallStatus.InstallStarted)
+            emitAndSaveStatus(id, InstallStatus.InstallPrepared)
+            apkUrlApi.preparingApk()
+
+            emitAndSaveStatus(id, InstallStatus.InstallStarted)
             apkUrlApi.getApk()
 
             /* отправляем все изменения при загрузке(от 1 до 100) .apk файла */
@@ -48,55 +43,55 @@ class InstallAppRepositoryImpl @Inject constructor(
                 flow = downloadingRepository.processApk()
                     .map{ progress -> // преобразуем Flow<Int> -> Flow<InstallStatus>
                         if (progress % 20 == 0) {
-                            withContext(dispatcherIo) {
-                                appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.Installing(progress)) // изменения в БД
-                            }
+                            setInstallStatus(id, installStatus = InstallStatus.Installing(progress)) // изменения в БД
                         }
 
                         InstallStatus.Installing(progress)
                     }
             )
 
-            emit(InstallStatus.Installed)
-            withContext(dispatcherIo) {
-                appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.Installed)
-            }
+            emitAndSaveStatus(id, InstallStatus.Installed)
 
             /* устанавливаем в БД статус, что попыток установки не было*/
-            withContext(dispatcherIo) {
-                appDetailsRepository.setHasInstallAttempts(id = id, newHasInstallAttempts = false)
-            }
+            setHasInstallAttempts(id, false)
         }
             .catch { error ->
-                emit(InstallStatus.InstallError(error))
-                withContext(dispatcherIo) {
-                    appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.InstallError(error))
-                }
+                emitAndSaveStatus(id, InstallStatus.InstallError(error))
             }
+
+    /* extension-функция для FlowCollector<InstallStatus> чтобы вынести
+    * повторяющиеся emit - setInstallStatus */
+    private suspend fun FlowCollector<InstallStatus>.emitAndSaveStatus(
+        id: String,
+        installStatus: InstallStatus
+    ) {
+        emit(installStatus)
+        setInstallStatus(id, installStatus)
+    }
+
+    private suspend fun setInstallStatus(id: String, installStatus: InstallStatus) {
+        withContext(dispatcherIo) {
+            appDetailsRepository.setInstallStatus(id, installStatus)
+        }
+    }
+
+    private suspend fun setHasInstallAttempts(id: String, newHasInstallAttempts: Boolean) {
+        withContext(dispatcherIo) {
+            appDetailsRepository.setHasInstallAttempts(id = id, newHasInstallAttempts = newHasInstallAttempts)
+        }
+    }
 
     override fun uninstallApk(id: String): Flow<InstallStatus> =
         flow {
-            emit(InstallStatus.UninstallPrepared)
-            withContext(dispatcherIo) {
-                appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.UninstallPrepared)
-            }
+            emitAndSaveStatus(id, InstallStatus.UninstallPrepared)
             apkUrlApi.preparingApk()
 
-            emit(InstallStatus.Uninstalling)
-            withContext(dispatcherIo) {
-                appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.Uninstalling)
-            }
+            emitAndSaveStatus(id, InstallStatus.Uninstalling)
             apkUrlApi.deleteApi()
 
-            emit(InstallStatus.Idle)
-            withContext(dispatcherIo) {
-                appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.Idle)
-            }
+            emitAndSaveStatus(id, InstallStatus.Idle)
         }
             .catch{ error ->
-                emit(InstallStatus.UninstallError(error))
-                withContext(dispatcherIo) {
-                    appDetailsRepository.setInstallStatus(id = id, newInstallStatus = InstallStatus.UninstallError(error))
-                }
+                emitAndSaveStatus(id, InstallStatus.UninstallError(error))
             }
 }
