@@ -58,7 +58,7 @@ fun AppDetailsContent(
         )
         Spacer(Modifier.height(4.dp))
 
-        InstallControl(
+        InstallationControl(
             content = content,
             installActions = installActions,
             modifier = Modifier

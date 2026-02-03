@@ -31,7 +31,7 @@ import com.example.rustorescreen.presentation.viewModel.AppDetailsState
 
 
 @Composable
-fun InstallControl(
+fun InstallationControl(
     content: AppDetailsState.Content,
     installActions: InstallActions,
     modifier: Modifier = Modifier
@@ -43,7 +43,7 @@ fun InstallControl(
         is InstallStatus.InstallPrepared,
         is InstallStatus.InstallStarted,
         is InstallStatus.Installing -> {
-            InstallButton(
+            Installation(
                 content = content,
                 onInstallClick = installActions.install, // = viewModel.installApp()
                 onCancelClick = installActions.cancel, // = viewModel.cancelInstall()
@@ -54,7 +54,7 @@ fun InstallControl(
         is InstallStatus.Installed,
         is InstallStatus.UninstallPrepared,
         is InstallStatus.Uninstalling -> {
-            UninstallButton(
+            Uninstallation(
                 content = content,
                 onUninstallClick = installActions.uninstall, // = viewModel.uninstallApp()
                 onOpenClick = installActions.open, // = viewModel.showWorkInProgressMessage
@@ -69,11 +69,8 @@ fun InstallControl(
     }
 }
 
-/* TODO: сверстать
-*   тут надо поменять название, и надо типо column(button, button)
-*   чтобы было две кнопки - Удалить, Открыть в одной строчке*/
 @Composable
-fun UninstallButton(
+fun Uninstallation(
     content: AppDetailsState.Content,
     onUninstallClick: () -> Unit,
     onOpenClick: () -> Unit,
@@ -81,61 +78,43 @@ fun UninstallButton(
 ) {
     val app: AppDetails = content.appDetails
 
-    when (val currentInstallStatus = app.installStatus) {
-        is InstallStatus.Installed -> {
-            /* кнопки удалить удалить - открыть */
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = modifier
-            ) {
-                /* кнопка удаления приложения */
-                Button(
-                    onClick = onUninstallClick,
-                    shape = RoundedCornerShape(16.dp),
-                    contentPadding = PaddingValues(vertical = 8.dp),
-                    modifier = modifier.weight(1f)
-                ) {
-                    Text(text = stringResource(R.string.uninstall))
-                }
+    val currentUninstallStatus: InstallStatus = app.installStatus
+    val isUninstallingState: Boolean = when(currentUninstallStatus) {
+        is InstallStatus.Installed -> false
+        else -> true
+    }
 
-                /* WIP: кнопка открыть приложение */
-                Button(
-                    onClick = onOpenClick,
-                    shape = RoundedCornerShape(16.dp),
-                    contentPadding = PaddingValues(vertical = 8.dp),
-                    modifier = modifier.weight(1f)
-                ) {
-                    Text(text = stringResource(R.string.open))
-                }
-            }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier
+    ) {
+        /* кнопка удаления приложения */
+        Button(
+            onClick = onUninstallClick,
+            shape = RoundedCornerShape(16.dp),
+            contentPadding = PaddingValues(vertical = 8.dp),
+            modifier = modifier.weight(1f)
+        ) {
+            UninstallButtonContent(uninstallStatus = currentUninstallStatus)
         }
-        else -> {
-            /* кнопка, на который пишется статус удаления */
+
+        /* WIP: кнопка открыть приложение */
+        if (!isUninstallingState) {
             Button(
-                onClick = onUninstallClick,
+                onClick = onOpenClick,
                 shape = RoundedCornerShape(16.dp),
                 contentPadding = PaddingValues(vertical = 8.dp),
-                modifier = modifier,
+                modifier = modifier.weight(1f)
             ) {
-                when (currentInstallStatus) {
-                    is InstallStatus.UninstallPrepared -> {
-                        Text(text = stringResource(R.string.uninstallPrepared))
-                    }
-                    is InstallStatus.Uninstalling -> {
-                        Text(text = stringResource(R.string.uninstalling))
-                    }
-                    else -> {
-                        Text(text = stringResource(R.string.work_in_progress))
-                    }
-                }
+                OpenButtonContent()
             }
         }
     }
 }
 
 @Composable
-fun InstallButton(
+fun Installation(
     content: AppDetailsState.Content,
     onInstallClick: () -> Unit,
     onCancelClick: () -> Unit,
@@ -153,129 +132,123 @@ fun InstallButton(
 
     val currentInstallStatus: InstallStatus = app.installStatus
 
-    /* определяем, нужно ли на этом статусе загрузки показывать, что был предыдущий прогресс */
-    val shouldShowPreviousProgress: Boolean = when(currentInstallStatus) {
-        is InstallStatus.InstallPrepared -> true
-        is InstallStatus.InstallStarted -> true
-        is InstallStatus.Installing -> true
-        else -> false
-    }
-
-    val shouldShowCancelInstallation = when(currentInstallStatus) {
+    /* булевый флаг, который отвечает за:
+    * 1) показ статуса предыдущего прогресса, если предыдущая загрузка была прервана
+    * 2) показ кнопки отмены загрузки при установке
+    * true - показываем, false - не показываем*/
+    val isInstallingState: Boolean = when(currentInstallStatus) {
         is InstallStatus.InstallPrepared,
         is InstallStatus.InstallStarted,
         is InstallStatus.Installing -> true
         else -> false
     }
 
-    if (shouldShowCancelInstallation) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = modifier,
-        ) {
-            Button(
-                onClick = onInstallClick,
-                shape = RoundedCornerShape(16.dp),
-                contentPadding = PaddingValues(vertical = 8.dp),
-                modifier = Modifier.weight(1f),
-            ) {
-                /* показываем предыдущий прогресс, если надо(если он был прерван в прошлый раз) */
-                if (shouldShowPreviousProgress && showPreviousInstallationProgress) {
-                    Text(text = stringResource(R.string.previousProgress))
-                    showPreviousInstallationProgress = false
-                }
-
-                when (val currentInstallStatus = app.installStatus) {
-                    is InstallStatus.Idle -> {
-                        Text(text = stringResource(R.string.install))
-                    }
-                    is InstallStatus.InstallPrepared -> {
-                        Text(text = stringResource(R.string.installPrepared))
-                    }
-                    is InstallStatus.InstallStarted -> {
-                        Text(text = stringResource(R.string.installStarted))
-                    }
-                    is InstallStatus.Installing -> {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = modifier,
-                        ) {
-                            /* Вывод в формате:
-                            * Загрузки: <Количество процентов> %*/
-                            Text(text = stringResource(R.string.installing))
-                            Spacer(Modifier.height(2.dp))
-                            Text(text = currentInstallStatus.progress.toString() + '%')
-                        }
-                    }
-                    is InstallStatus.Installed -> {
-                        Text(text = stringResource(R.string.installed))
-                    }
-                    else -> {
-                        Text(text = stringResource(R.string.work_in_progress))
-                    }
-                }
-            }
-
-            Button(
-                onClick = onCancelClick,
-                shape = RoundedCornerShape(12.dp),
-                contentPadding = PaddingValues(0.dp),
-                modifier = Modifier.size(44.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                ),
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = stringResource(R.string.cancel),
-                )
-            }
-        }
-    }
-    else {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier,
+    ) {
+        /* статус установки */
         Button(
             onClick = onInstallClick,
             shape = RoundedCornerShape(16.dp),
             contentPadding = PaddingValues(vertical = 8.dp),
-            modifier = modifier,
+            modifier = modifier.weight(1f),
         ) {
             /* показываем предыдущий прогресс, если надо(если он был прерван в прошлый раз) */
-            if (shouldShowPreviousProgress && showPreviousInstallationProgress) {
+            if (isInstallingState && showPreviousInstallationProgress) {
                 Text(text = stringResource(R.string.previousProgress))
                 showPreviousInstallationProgress = false
             }
 
-            when (val currentInstallStatus = app.installStatus) {
-                is InstallStatus.Idle -> {
-                    Text(text = stringResource(R.string.install))
-                }
-                is InstallStatus.InstallPrepared -> {
-                    Text(text = stringResource(R.string.installPrepared))
-                }
-                is InstallStatus.InstallStarted -> {
-                    Text(text = stringResource(R.string.installStarted))
-                }
-                is InstallStatus.Installing -> {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = modifier,
-                    ) {
-                        /* Вывод в формате:
-                        * Загрузки: <Количество процентов> %*/
-                        Text(text = stringResource(R.string.installing))
-                        Spacer(Modifier.height(2.dp))
-                        Text(text = currentInstallStatus.progress.toString() + '%')
-                    }
-                }
-                is InstallStatus.Installed -> {
-                    Text(text = stringResource(R.string.installed))
-                }
-                else -> {
-                    Text(text = stringResource(R.string.work_in_progress))
-                }
-            }
+            InstallButtonContent(installStatus = currentInstallStatus, modifier = modifier)
+        }
+
+        if (isInstallingState) {
+            /* кнопка отмены установки */
+            CancelButton(onClick = onCancelClick)
         }
     }
+}
+
+@Composable
+fun InstallButtonContent(
+    installStatus: InstallStatus,
+    modifier: Modifier = Modifier,
+) {
+    when (installStatus) {
+        is InstallStatus.Idle -> {
+            Text(text = stringResource(R.string.install))
+        }
+        is InstallStatus.InstallPrepared -> {
+            Text(text = stringResource(R.string.installPrepared))
+        }
+        is InstallStatus.InstallStarted -> {
+            Text(text = stringResource(R.string.installStarted))
+        }
+        is InstallStatus.Installing -> {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = modifier,
+            ) {
+                /* Вывод в формате:
+                * Загрузки: <Количество процентов> %*/
+                Text(text = stringResource(R.string.installing))
+                Spacer(Modifier.height(2.dp))
+                Text(text = installStatus.progress.toString() + '%')
+            }
+        }
+        is InstallStatus.Installed -> {
+            Text(text = stringResource(R.string.installed))
+        }
+        else -> {
+            Text(text = stringResource(R.string.work_in_progress))
+        }
+    }
+}
+
+@Composable
+fun CancelButton(
+    onClick: () -> Unit,
+) {
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(12.dp),
+        contentPadding = PaddingValues(0.dp),
+        modifier = Modifier.size(44.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        ),
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Close,
+            contentDescription = stringResource(R.string.cancel),
+        )
+    }
+}
+
+@Composable
+fun UninstallButtonContent(
+    uninstallStatus: InstallStatus,
+) {
+    when (uninstallStatus) {
+        is InstallStatus.Installed -> {
+            Text(text = stringResource(R.string.uninstall))
+        }
+        is InstallStatus.UninstallPrepared -> {
+            Text(text = stringResource(R.string.uninstallPrepared))
+        }
+        is InstallStatus.Uninstalling -> {
+            Text(text = stringResource(R.string.uninstalling))
+        }
+        else -> {
+            Text(text = stringResource(R.string.work_in_progress))
+        }
+    }
+}
+
+@Composable
+fun OpenButtonContent() {
+    Text(text = stringResource(R.string.open))
 }
