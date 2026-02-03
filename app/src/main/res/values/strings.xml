@@ -17,6 +17,7 @@
     <string name="installStarted">Начало загрузки</string>
     <string name="installing">Загрузка: </string>
     <string name="installed">Установлено</string>
+    <string name="cancel">Отмена</string>
     <string name="open">Открыть</string>
 
     <string name="previousProgress">Требуется перезагрузить\nПредыдущее состояние: </string>
