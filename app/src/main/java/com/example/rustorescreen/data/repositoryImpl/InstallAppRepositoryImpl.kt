@@ -64,6 +64,9 @@ class InstallAppRepositoryImpl @Inject constructor(
             emitAndSaveStatus(id, InstallStatus.Idle)
             apkUrlApi.collectGarbage() // очистка "мусора", который успел скачаться
         }
+            .catch { error ->
+                emitAndSaveStatus(id, InstallStatus.InstallError(error))
+            }
 
 
     override fun uninstallApk(id: String): Flow<InstallStatus> =
