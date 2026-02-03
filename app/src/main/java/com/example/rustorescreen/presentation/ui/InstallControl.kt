@@ -161,7 +161,7 @@ fun InstallButton(
         else -> false
     }
 
-    val shouldShowCancelInstallation = onCancelClick != null && when(currentInstallStatus) {
+    val shouldShowCancelInstallation = when(currentInstallStatus) {
         is InstallStatus.InstallPrepared,
         is InstallStatus.InstallStarted,
         is InstallStatus.Installing -> true
