@@ -6,5 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface InstallAppRepository {
     fun installApk(id: String): Flow<InstallStatus>
 
+    fun cancelApk(id: String): Flow<InstallStatus>
+
     fun uninstallApk(id: String): Flow<InstallStatus>
 }

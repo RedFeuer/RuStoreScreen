@@ -16,6 +16,10 @@ class ApkUrlApi {
         delay(3000L)
     }
 
+    suspend fun cancelApk() {
+        delay(200L)
+    }
+
     suspend fun deleteApi() {
         delay(3000L)
     }

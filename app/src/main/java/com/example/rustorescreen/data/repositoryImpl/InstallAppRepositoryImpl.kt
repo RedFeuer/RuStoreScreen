@@ -59,6 +59,27 @@ class InstallAppRepositoryImpl @Inject constructor(
                 emitAndSaveStatus(id, InstallStatus.InstallError(error))
             }
 
+    override fun cancelApk(id: String): Flow<InstallStatus> =
+        flow {
+            emitAndSaveStatus(id, InstallStatus.Idle)
+            apkUrlApi.cancelApk()
+        }
+
+
+    override fun uninstallApk(id: String): Flow<InstallStatus> =
+        flow {
+            emitAndSaveStatus(id, InstallStatus.UninstallPrepared)
+            apkUrlApi.preparingApk()
+
+            emitAndSaveStatus(id, InstallStatus.Uninstalling)
+            apkUrlApi.deleteApi()
+
+            emitAndSaveStatus(id, InstallStatus.Idle)
+        }
+            .catch{ error ->
+                emitAndSaveStatus(id, InstallStatus.UninstallError(error))
+            }
+
     /* extension-функция для FlowCollector<InstallStatus> чтобы вынести
     * повторяющиеся emit - setInstallStatus */
     private suspend fun FlowCollector<InstallStatus>.emitAndSaveStatus(
@@ -80,18 +101,4 @@ class InstallAppRepositoryImpl @Inject constructor(
             appDetailsRepository.setHasInstallAttempts(id = id, newHasInstallAttempts = newHasInstallAttempts)
         }
     }
-
-    override fun uninstallApk(id: String): Flow<InstallStatus> =
-        flow {
-            emitAndSaveStatus(id, InstallStatus.UninstallPrepared)
-            apkUrlApi.preparingApk()
-
-            emitAndSaveStatus(id, InstallStatus.Uninstalling)
-            apkUrlApi.deleteApi()
-
-            emitAndSaveStatus(id, InstallStatus.Idle)
-        }
-            .catch{ error ->
-                emitAndSaveStatus(id, InstallStatus.UninstallError(error))
-            }
 }
