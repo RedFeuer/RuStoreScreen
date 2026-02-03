@@ -62,7 +62,7 @@ class InstallAppRepositoryImpl @Inject constructor(
     override fun cancelApk(id: String): Flow<InstallStatus> =
         flow {
             emitAndSaveStatus(id, InstallStatus.Idle)
-            apkUrlApi.cancelApk()
+            apkUrlApi.collectGarbage() // очистка "мусора", который успел скачаться
         }
 
 
