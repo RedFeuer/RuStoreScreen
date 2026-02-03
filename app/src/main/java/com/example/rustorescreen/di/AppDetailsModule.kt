@@ -9,6 +9,7 @@ import com.example.rustorescreen.data.repositoryImpl.InstallAppRepositoryImpl
 import com.example.rustorescreen.domain.repositoryInterface.AppDetailsRepository
 import com.example.rustorescreen.domain.repositoryInterface.DownloadingRepository
 import com.example.rustorescreen.domain.repositoryInterface.InstallAppRepository
+import com.example.rustorescreen.domain.useCase.CancelAppUseCase
 import com.example.rustorescreen.domain.useCase.GetAppDetailsUseCase
 import com.example.rustorescreen.domain.useCase.InstallAppUseCase
 import com.example.rustorescreen.domain.useCase.UninstallAppUseCase
@@ -81,6 +82,12 @@ abstract class AppDetailsModule {
         @Singleton
         fun provideInstallAppUseCase(repository: InstallAppRepository): InstallAppUseCase {
             return InstallAppUseCase(repository)
+        }
+
+        @Provides
+        @Singleton
+        fun provideCancelAppUseCase(repository: InstallAppRepository): CancelAppUseCase {
+            return CancelAppUseCase(repository)
         }
 
         @Provides
