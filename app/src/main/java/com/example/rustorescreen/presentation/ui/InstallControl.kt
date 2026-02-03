@@ -6,8 +6,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,7 +45,8 @@ fun InstallControl(
         is InstallStatus.Installing -> {
             InstallButton(
                 content = content,
-                onClick = installActions.install, // = viewModel.installApp()
+                onInstallClick = installActions.install, // = viewModel.installApp()
+                onCancelClick = installActions.cancel, // = viewModel.cancelInstall()
                 modifier = modifier,
             )
         }
@@ -130,7 +137,8 @@ fun UninstallButton(
 @Composable
 fun InstallButton(
     content: AppDetailsState.Content,
-    onClick: () -> Unit,
+    onInstallClick: () -> Unit,
+    onCancelClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val app: AppDetails = content.appDetails
@@ -153,45 +161,120 @@ fun InstallButton(
         else -> false
     }
 
-    Button(
-        onClick = onClick,
-        shape = RoundedCornerShape(16.dp),
-        contentPadding = PaddingValues(vertical = 8.dp),
-        modifier = modifier,
-    ) {
-        /* показываем предыдущий прогресс, если надо(если он был прерван в прошлый раз) */
-        if (shouldShowPreviousProgress && showPreviousInstallationProgress) {
-            Text(text = stringResource(R.string.previousProgress))
-            showPreviousInstallationProgress = false
-        }
+    val shouldShowCancelInstallation = onCancelClick != null && when(currentInstallStatus) {
+        is InstallStatus.InstallPrepared,
+        is InstallStatus.InstallStarted,
+        is InstallStatus.Installing -> true
+        else -> false
+    }
 
-        when (val currentInstallStatus = app.installStatus) {
-            is InstallStatus.Idle -> {
-                Text(text = stringResource(R.string.install))
-            }
-            is InstallStatus.InstallPrepared -> {
-                Text(text = stringResource(R.string.installPrepared))
-            }
-            is InstallStatus.InstallStarted -> {
-                Text(text = stringResource(R.string.installStarted))
-            }
-            is InstallStatus.Installing -> {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = modifier,
-                ) {
-                    /* Вывод в формате:
-                    * Загрузки: <Количество процентов> %*/
-                    Text(text = stringResource(R.string.installing))
-                    Spacer(Modifier.height(2.dp))
-                    Text(text = currentInstallStatus.progress.toString() + '%')
+    if (shouldShowCancelInstallation) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = modifier,
+        ) {
+            Button(
+                onClick = onInstallClick,
+                shape = RoundedCornerShape(16.dp),
+                contentPadding = PaddingValues(vertical = 8.dp),
+                modifier = Modifier.weight(1f),
+            ) {
+                /* показываем предыдущий прогресс, если надо(если он был прерван в прошлый раз) */
+                if (shouldShowPreviousProgress && showPreviousInstallationProgress) {
+                    Text(text = stringResource(R.string.previousProgress))
+                    showPreviousInstallationProgress = false
+                }
+
+                when (val currentInstallStatus = app.installStatus) {
+                    is InstallStatus.Idle -> {
+                        Text(text = stringResource(R.string.install))
+                    }
+                    is InstallStatus.InstallPrepared -> {
+                        Text(text = stringResource(R.string.installPrepared))
+                    }
+                    is InstallStatus.InstallStarted -> {
+                        Text(text = stringResource(R.string.installStarted))
+                    }
+                    is InstallStatus.Installing -> {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = modifier,
+                        ) {
+                            /* Вывод в формате:
+                            * Загрузки: <Количество процентов> %*/
+                            Text(text = stringResource(R.string.installing))
+                            Spacer(Modifier.height(2.dp))
+                            Text(text = currentInstallStatus.progress.toString() + '%')
+                        }
+                    }
+                    is InstallStatus.Installed -> {
+                        Text(text = stringResource(R.string.installed))
+                    }
+                    else -> {
+                        Text(text = stringResource(R.string.work_in_progress))
+                    }
                 }
             }
-            is InstallStatus.Installed -> {
-                Text(text = stringResource(R.string.installed))
+
+            Button(
+                onClick = onCancelClick,
+                shape = RoundedCornerShape(12.dp),
+                contentPadding = PaddingValues(0.dp),
+                modifier = Modifier.size(44.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = stringResource(R.string.cancel),
+                )
             }
-            else -> {
-                Text(text = stringResource(R.string.work_in_progress))
+        }
+    }
+    else {
+        Button(
+            onClick = onInstallClick,
+            shape = RoundedCornerShape(16.dp),
+            contentPadding = PaddingValues(vertical = 8.dp),
+            modifier = modifier,
+        ) {
+            /* показываем предыдущий прогресс, если надо(если он был прерван в прошлый раз) */
+            if (shouldShowPreviousProgress && showPreviousInstallationProgress) {
+                Text(text = stringResource(R.string.previousProgress))
+                showPreviousInstallationProgress = false
+            }
+
+            when (val currentInstallStatus = app.installStatus) {
+                is InstallStatus.Idle -> {
+                    Text(text = stringResource(R.string.install))
+                }
+                is InstallStatus.InstallPrepared -> {
+                    Text(text = stringResource(R.string.installPrepared))
+                }
+                is InstallStatus.InstallStarted -> {
+                    Text(text = stringResource(R.string.installStarted))
+                }
+                is InstallStatus.Installing -> {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = modifier,
+                    ) {
+                        /* Вывод в формате:
+                        * Загрузки: <Количество процентов> %*/
+                        Text(text = stringResource(R.string.installing))
+                        Spacer(Modifier.height(2.dp))
+                        Text(text = currentInstallStatus.progress.toString() + '%')
+                    }
+                }
+                is InstallStatus.Installed -> {
+                    Text(text = stringResource(R.string.installed))
+                }
+                else -> {
+                    Text(text = stringResource(R.string.work_in_progress))
+                }
             }
         }
     }
